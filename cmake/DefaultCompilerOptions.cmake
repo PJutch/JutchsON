@@ -1,0 +1,7 @@
+macro(setDefaultCompilerOptions target)
+    if(MSVC)
+      target_compile_options(${target} INTERFACE /W4 /external:anglebrackets /external:W0 /external:templates-)
+    else()
+      target_compile_options(${target} INTERFACE -Wall -Wextra -Wpedantic)
+    endif()
+endmacro()
