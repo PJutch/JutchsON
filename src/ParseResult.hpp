@@ -31,6 +31,27 @@ namespace JutchsON {
         }
 
         friend bool operator == (const ParseResult&, const ParseResult&) = default;
+
+        ParseResult<T> offseted(Location offset) const {
+            if (const T* value = std::get_if<T>(&data)) {
+                return *value;
+            } else {
+                std::vector<ParseError> errors = std::get<std::vector<ParseError>>(data);
+                for (ParseError& error : errors) {
+                    error.location = combine(error.location, offset);
+                }
+                return errors;
+            }
+        }
+
+        template <typename UnaryF> requires std::convertible_to<std::invoke_result_t<UnaryF, T>, T>
+        ParseResult<T> then(UnaryF&& f) {
+            if (const T* value = std::get_if<T>(&data)) {
+                return f(*value);
+            } else {
+                return *this;
+            }
+        }
     private:
         std::variant<T, std::vector<ParseError>> data;
     };

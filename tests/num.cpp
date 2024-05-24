@@ -41,3 +41,31 @@ TEST(Num, parseUintEndSep) {
 TEST(Num, parseUintDoubleSep) {
 	EXPECT_EQ(JutchsON::parseUint("12''3"), JutchsON::ParseResult<unsigned int>::makeError({0, 3}, "Number can't contain double '"));
 }
+
+TEST(Num, parseInt) {
+	EXPECT_EQ(JutchsON::parseInt("123"), 123);
+}
+
+TEST(Num, parseIntError) {
+	EXPECT_EQ(JutchsON::parseInt("123garbage"), JutchsON::ParseResult<int>::makeError({0, 3}, "Number can't contain char 'g'"));
+}
+
+TEST(Num, parseIntLongLong) {
+	EXPECT_EQ(JutchsON::parseInt<long long>("123"), 123ll);
+}
+
+TEST(Num, parseIntPlus) {
+	EXPECT_EQ(JutchsON::parseInt("+123"), 123);
+}
+
+TEST(Num, parseIntPlusError) {
+	EXPECT_EQ(JutchsON::parseInt("+123garbage"), JutchsON::ParseResult<int>::makeError({0, 4}, "Number can't contain char 'g'"));
+}
+
+TEST(Num, parseIntMinus) {
+	EXPECT_EQ(JutchsON::parseInt("-123"), -123);
+}
+
+TEST(Num, parseIntMinusError) {
+	EXPECT_EQ(JutchsON::parseInt("-123garbage"), JutchsON::ParseResult<int>::makeError({0, 4}, "Number can't contain char 'g'"));
+}

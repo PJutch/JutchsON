@@ -4,6 +4,7 @@
 #include "ParseResult.hpp"
 #include "escape.hpp"
 
+#include <functional>
 #include <format>
 #include <string_view>
 #include <string>
@@ -38,6 +39,19 @@ namespace JutchsON {
         }
 
         return res;
+    }
+
+    template <typename T = int>
+    ParseResult<T> parseInt(std::string_view s) {
+        if (s.empty()) {
+            return ParseResult<T>::makeError({0, 0}, "Number can't be empty str");
+        } else if (s.front() == '+') {
+            return parseUint<T>(s.substr(1)).offseted({0, 1});
+        } else if (s.front() == '-') {
+            return parseUint<T>(s.substr(1)).offseted({0, 1}).then(std::negate<>{});
+        } else {
+            return parseUint<T>(s);
+        }
     }
 }
 
