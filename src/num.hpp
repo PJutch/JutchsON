@@ -13,7 +13,7 @@
 
 namespace JutchsON {
     template <typename T = unsigned int>
-    ParseResult<T> parseUint(std::string_view s) {
+    ParseResult<T> parseDigits(std::string_view s) {
         if (s.empty()) {
             return ParseResult<T>::makeError({0, 0}, "Number can't be empty str");
         }
@@ -43,7 +43,7 @@ namespace JutchsON {
     }
 
     template <typename T = int>
-    ParseResult<T> parseInt(std::string_view s) {
+    ParseResult<T> parseSignDigits(std::string_view s) {
         if (s.empty()) {
             return ParseResult<T>::makeError({0, 0}, "Number can't be empty str");
         } else if (s.front() == '+') {
@@ -53,6 +53,16 @@ namespace JutchsON {
         } else {
             return parseUint<T>(s);
         }
+    }
+
+    template <typename T = unsigned int>
+    ParseResult<T> parseUint(std::string_view s) {
+        return parseDigits<T>(s);
+    }
+
+    template <typename T = int>
+    ParseResult<T> parseInt(std::string_view s) {
+        return parseSignDigits<T>(s);
     }
 
     template <typename T>
