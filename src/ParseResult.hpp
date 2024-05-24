@@ -54,16 +54,16 @@ namespace JutchsON {
         }
 
         template <typename UnaryF>
-        ParseResult<std::invoke_result_t<UnaryF, T>> map(UnaryF&& f) {
+        ParseResult<std::invoke_result_t<UnaryF, T>> map(UnaryF&& f) const {
             if (const T* value = std::get_if<T>(&data)) {
                 return f(*value);
             } else {
-                return *this;
+                return std::get<std::vector<ParseError>>(data);
             }
         }
 
         template <typename UnaryF> requires std::constructible_from<std::invoke_result_t<UnaryF, T>, std::vector<ParseError>>
-        std::invoke_result_t<UnaryF, T> then(UnaryF&& f) {
+        std::invoke_result_t<UnaryF, T> then(UnaryF&& f) const {
             if (const T* value = std::get_if<T>(&data)) {
                 return f(*value);
             } else {
