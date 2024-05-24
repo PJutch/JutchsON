@@ -47,9 +47,9 @@ namespace JutchsON {
         if (s.empty()) {
             return ParseResult<T>::makeError({0, 0}, "Number can't be empty str");
         } else if (s.front() == '+') {
-            return parseUint<T>(s.substr(1)).offseted({0, 1});
+            return parseUint<T>(s.substr(1)).rebased({0, 1});
         } else if (s.front() == '-') {
-            return parseUint<T>(s.substr(1)).offseted({0, 1}).map(std::negate<>{});
+            return parseUint<T>(s.substr(1)).rebased({0, 1}).map(std::negate<>{});
         } else {
             return parseUint<T>(s);
         }
@@ -81,9 +81,10 @@ namespace JutchsON {
             ptrdiff_t nDigits = std::ranges::count_if(fractionalBegin, s.end(), [](char c) {
                 return isdigit(c);
             });
+
             return parseUint<T>({fractionalBegin, s.end()}).map([&](T fractional) {
                 return integral + fractional * powIntExp(T{10}, -nDigits);
-            });
+            }).rebased(Location::fromIndex(s, fractionalBegin - s.begin()));
         });
     }
 
@@ -92,9 +93,9 @@ namespace JutchsON {
         if (s.empty()) {
             return ParseResult<T>::makeError({0, 0}, "Number can't be empty str");
         } else if (s.front() == '+') {
-            return parseNonnegativeFloat<T>(s.substr(1)).offseted({0, 1});
+            return parseNonnegativeFloat<T>(s.substr(1)).rebased({0, 1});
         } else if (s.front() == '-') {
-            return parseNonnegativeFloat<T>(s.substr(1)).offseted({0, 1}).map(std::negate<>{});
+            return parseNonnegativeFloat<T>(s.substr(1)).rebased({0, 1}).map(std::negate<>{});
         } else {
             return parseNonnegativeFloat<T>(s);
         }

@@ -122,6 +122,14 @@ TEST(Num, parseNonnegativeFloat0Dot0) {
 	EXPECT_EQ(JutchsON::parseNonnegativeFloat("0.0"), 0.0);
 }
 
+TEST(Num, parseNonnegativeFloatGarbage) {
+	EXPECT_EQ(JutchsON::parseNonnegativeFloat("123garbage"), JutchsON::ParseResult<double>::makeError({0, 3}, "Number can't contain char 'g'"));
+}
+
+TEST(Num, parseNonnegativeFloatDotGarbage) {
+	EXPECT_EQ(JutchsON::parseNonnegativeFloat("1.0garbage"), JutchsON::ParseResult<double>::makeError({0, 3}, "Number can't contain char 'g'"));
+}
+
 TEST(Num, parseFloat) {
 	EXPECT_EQ(JutchsON::parseFloat("1.23"), 1.23);
 }
@@ -140,4 +148,12 @@ TEST(Num, parseFloatMinus0) {
 
 TEST(Num, parseFloatMinusGreaterMinus1) {
 	EXPECT_FLOAT_EQ(JutchsON::parseFloat("-0.01").getOk(), -0.01);
+}
+
+TEST(Num, parseNonnegativeFloatSignGarbage) {
+	EXPECT_EQ(JutchsON::parseFloat("+123garbage"), JutchsON::ParseResult<double>::makeError({0, 4}, "Number can't contain char 'g'"));
+}
+
+TEST(Num, parseNonnegativeFloatSignDotGarbage) {
+	EXPECT_EQ(JutchsON::parseFloat("+1.0garbage"), JutchsON::ParseResult<double>::makeError({0, 4}, "Number can't contain char 'g'"));
 }

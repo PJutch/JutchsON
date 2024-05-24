@@ -41,13 +41,13 @@ namespace JutchsON {
             }
         }
 
-        ParseResult<T> offseted(Location offset) const {
+        ParseResult<T> rebased(Location base) const {
             if (const T* value = std::get_if<T>(&data)) {
                 return *value;
             } else {
                 std::vector<ParseError> errors = std::get<std::vector<ParseError>>(data);
                 for (ParseError& error : errors) {
-                    error.location = combine(error.location, offset);
+                    error.location = combine(base, error.location);
                 }
                 return errors;
             }
