@@ -19,7 +19,7 @@ TEST(Num, parseUintManyZero) {
 }
 
 TEST(Num, parseUintGarbage) {
-	EXPECT_EQ(JutchsON::parseUint("123garbage"), JutchsON::ParseResult<unsigned int>::makeError({0, 3}, "Number can't contain char g"));
+	EXPECT_EQ(JutchsON::parseUint("123garbage"), JutchsON::ParseResult<unsigned int>::makeError({0, 3}, "Number can't contain char 'g'"));
 }
 
 TEST(Num, parseUintSep) {

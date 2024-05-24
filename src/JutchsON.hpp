@@ -4,5 +4,6 @@
 #include "num.hpp"
 #include "Location.hpp"
 #include "ParseResult.hpp"
+#include "escape.hpp"
 
 #endif

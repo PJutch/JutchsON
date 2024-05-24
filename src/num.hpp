@@ -2,6 +2,7 @@
 #define JUTCHSON_NUM_HPP_
 
 #include "ParseResult.hpp"
+#include "escape.hpp"
 
 #include <format>
 #include <string_view>
@@ -28,7 +29,7 @@ namespace JutchsON {
                     return ParseResult<T>::makeError(Location::fromIndex(s, i), "Number can't contain double '");
                 }
             } else {
-                return ParseResult<T>::makeError(Location::fromIndex(s, i), std::format("Number can't contain char {}", c));
+                return ParseResult<T>::makeError(Location::fromIndex(s, i), std::format("Number can't contain char {}", escapeChar(s, i)));
             }
         }
 
