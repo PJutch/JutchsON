@@ -55,7 +55,7 @@ TEST(List, parseListFrontSpaces) {
     EXPECT_EQ(parseList("  ab\t cde j"), (std::vector<std::string_view>{"ab", "cde", "j"}));
 }
 
-TEST(List, parseListBackSpaces) {
+TEST(List, parseListBackSpace) {
     EXPECT_EQ(parseList("ab\t cde j  "), (std::vector<std::string_view>{"ab", "cde", "j"}));
 }
 
@@ -68,9 +68,41 @@ TEST(List, parseListSingle) {
 }
 
 TEST(List, parseListOnlySpaces) {
-    EXPECT_TRUE(parseList("    ").empty());
+    EXPECT_TRUE(parseList("    ").getOk().empty());
 }
 
 TEST(List, parseListEmpty) {
-    EXPECT_TRUE(parseList("    ").empty());
+    EXPECT_TRUE(parseList("").getOk().empty());
+}
+
+TEST(List, parseListNested) {
+    EXPECT_EQ(parseList("ab\t [cde wxyz] j"), (std::vector<std::string_view>{"ab", "[cde wxyz]", "j"}));
+}
+
+TEST(List, parseListNestedNoFrontSpace) {
+    EXPECT_EQ(parseList("ab[cde wxyz] j"), (std::vector<std::string_view>{"ab", "[cde wxyz]", "j"}));
+}
+
+TEST(List, parseListNestedNoBackSpace) {
+    EXPECT_EQ(parseList("ab\t [cde wxyz]j"), (std::vector<std::string_view>{"ab", "[cde wxyz]", "j"}));
+}
+
+TEST(List, parseListNestedNoBothSpaces) {
+    EXPECT_EQ(parseList("ab[cde wxyz]j"), (std::vector<std::string_view>{"ab", "[cde wxyz]", "j"}));
+}
+
+TEST(List, parseListBrackets) {
+    EXPECT_EQ(parseList("[ab\t cde j]"), (std::vector<std::string_view>{"ab", "cde", "j"}));
+}
+
+TEST(List, parseListEmptyBrackets) {
+    EXPECT_TRUE(parseList("[]").getOk().empty());
+}
+
+TEST(List, parseListUnmatchedOpeningBracket) {
+    EXPECT_EQ(parseList("[abc de"), JutchsON::ParseResult<std::vector<std::string_view>>::makeError({0, 0}, "Unmatched ["));
+}
+
+TEST(List, parseListUnmatchedClosingBracket) {
+    EXPECT_EQ(parseList("abc de]"), JutchsON::ParseResult<std::vector<std::string_view>>::makeError({0, 6}, "Unmatched ]"));
 }
