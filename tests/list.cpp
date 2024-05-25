@@ -47,6 +47,53 @@ TEST(List, findObjectEndEnd) {
     EXPECT_EQ(findObjectEnd(s), std::ssize(s));
 }
 
+TEST(List, findLineObjectEnd) {
+    std::string_view s = "ab \n cde j";
+    EXPECT_EQ(findLineObjectEnd(s), 3);
+}
+
+TEST(List, findLineObjectEnd1Line) {
+    std::string_view s = "  ab  cde j";
+    EXPECT_EQ(findLineObjectEnd(s), std::ssize(s));
+}
+
+TEST(List, findLineObjectEndFront) {
+    std::string_view s = "\nabc";
+    EXPECT_EQ(findLineObjectEnd(s), 0);
+}
+
+TEST(List, findLineObjectEndEmpty) {
+    std::string_view s = "";
+    EXPECT_EQ(findLineObjectEnd(s), 0);
+}
+
+TEST(List, findLineObjectNewlineInList) {
+    std::string_view s = "ab [ce \nwxyz] cd\n j";
+    EXPECT_EQ(findLineObjectEnd(s), 16);
+}
+
+TEST(List, findLineObjectNoNewlineInList) {
+    std::string_view s = "ab [ce wxyz] cd\n j";
+    EXPECT_EQ(findLineObjectEnd(s), 15);
+}
+
+TEST(List, findLineObjectListOnly) {
+    std::string_view s = "[ab ce\n wxyz cd\n j]";
+    EXPECT_EQ(findLineObjectEnd(s), std::ssize(s));
+}
+
+TEST(List, isMulitiline) {
+    EXPECT_TRUE(isMultiline("ab ce\n wxyz cd\n j"));
+}
+
+TEST(List, isMulitilineFalse) {
+    EXPECT_FALSE(isMultiline("ab ce j"));
+}
+
+TEST(List, isMulitilineInBrackets) {
+    EXPECT_FALSE(isMultiline("ab [cd\n wxyz] j"));
+}
+
 TEST(List, parseList) {
     EXPECT_EQ(parseList("ab\t cde j"), (std::vector<std::string_view>{"ab", "cde", "j"}));
 }
@@ -105,4 +152,24 @@ TEST(List, parseListUnmatchedOpeningBracket) {
 
 TEST(List, parseListUnmatchedClosingBracket) {
     EXPECT_EQ(parseList("abc de]"), JutchsON::ParseResult<std::vector<std::string_view>>::makeError({0, 6}, "Unmatched ]"));
+}
+
+TEST(List, parseListMultiline) {
+    EXPECT_EQ(parseList("ab\n cde wxyz"), (std::vector<std::string_view>{"ab", "cde wxyz"}));
+}
+
+TEST(List, parseListMultilineBrackets) {
+    EXPECT_EQ(parseList("[ab\n cde wxyz]"), (std::vector<std::string_view>{"ab", "cde wxyz"}));
+}
+
+TEST(List, parseListMultilineSeparateBrackets) {
+    EXPECT_EQ(parseList("[\nab cde wxyz\n]"), (std::vector<std::string_view>{"ab", "cde", "wxyz"}));
+}
+
+TEST(List, parseListMultilineDoubleNewline) {
+    EXPECT_EQ(parseList("ab cde wxyz\n\nj"), (std::vector<std::string_view>{"ab cde wxyz", "j"}));
+}
+
+TEST(List, parseListMultilineEmpty) {
+    EXPECT_TRUE(parseList("\n\n\n").getOk().empty());
 }
