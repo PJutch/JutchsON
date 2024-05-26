@@ -4,6 +4,8 @@
 #include "Location.hpp"
 
 #include <variant>
+#include <format>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <ranges>
@@ -70,9 +72,32 @@ namespace JutchsON {
                 return std::get<std::vector<ParseError>>(data);
             }
         }
+
+        const std::variant<T, std::vector<ParseError>>& variant() const {
+            return data;
+        }
     private:
         std::variant<T, std::vector<ParseError>> data;
     };
+
+    template <typename T>
+    concept Printable = requires (T value, std::ostream & os) {
+        { os << value } -> std::convertible_to<std::ostream&>;
+    };
+
+    template <Printable T> 
+    std::ostream& operator << (std::ostream& os, const ParseResult<T>& res) {
+        if (const T* value = std::get_if<T>(&res.variant())) {
+            return os << *value;
+        } else {
+            const auto& errors = std::get<std::vector<ParseError>>(res.variant());
+            os << "Parse failed with " << std::ssize(errors) << " errors" << std::endl;
+            for (const auto& [location, what] : errors) {
+                os << location.line << ':' << location.column << ' ' << what << std::endl;
+            }
+            return os;
+        } 
+    }P
 }
 
 #endif
