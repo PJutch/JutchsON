@@ -103,6 +103,8 @@ namespace JutchsON {
 
         StringView(iterator begin, iterator end) : base{begin.baseString()}, offset{begin.offset()}, len{end - begin} {}
 
+        StringView(const char* s) : base{s}, offset{0}, len{std::ssize(base)} {}
+
         iterator begin() const {
             return {base.begin() + offset, base};
         }
@@ -177,6 +179,10 @@ namespace JutchsON {
 
         Location location(int64_t pos = 0) const {
             return Location::fromIndex(base, offset + pos);
+        }
+
+        std::string_view asStd() const {
+            return base.substr(offset, len);
         }
     private:
         std::string_view base;

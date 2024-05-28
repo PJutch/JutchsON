@@ -1,6 +1,7 @@
 #ifndef JUTCHSON_NUM_HPP_
 #define JUTCHSON_NUM_HPP_
 
+#include "StringView.hpp"
 #include "ParseResult.hpp"
 #include "escape.hpp"
 
@@ -27,7 +28,7 @@ namespace JutchsON {
     }
 
     template <typename T = unsigned int>
-    ParseResult<T> parseDigits(std::string_view s) {
+    ParseResult<T> parseDigits(StringView s) {
         if (s.empty()) {
             return ParseResult<T>::makeError({0, 0}, "Number can't be empty str");
         }
@@ -42,15 +43,15 @@ namespace JutchsON {
                 if (i == 0) {
                     return ParseResult<T>::makeError({0, 0}, "Number can't start with '");
                 } else if (s[i - 1] == '\'') {
-                    return ParseResult<T>::makeError(Location::fromIndex(s, i), "Number can't contain double '");
+                    return ParseResult<T>::makeError(s.location(i), "Number can't contain double '");
                 }
             } else {
-                return ParseResult<T>::makeError(Location::fromIndex(s, i), std::format("Number can't contain char {}", escapeChar(s, i)));
+                return ParseResult<T>::makeError(s.location(i), std::format("Number can't contain char {}", escapeChar(s, i)));
             }
         }
 
         if (s.back() == '\'') {
-            return ParseResult<T>::makeError(Location::fromIndex(s, std::ssize(s) - 1), "Number can't end with '");
+            return ParseResult<T>::makeError(s.location(std::ssize(s) - 1), "Number can't end with '");
         }
 
         return res;
@@ -74,7 +75,7 @@ namespace JutchsON {
         auto e = std::ranges::find_if(s, [](char c) {
             return c == 'e' || c == 'E';
         });
-        return parseDigits<T>({s.begin(), e}).then([&](T integral) -> ParseResult<T> {
+        return parseDigits<T>(std::string_view{s.begin(), e}).then([&](T integral) -> ParseResult<T> {
             if (e == s.end()) {
                 return integral;
             } else if (std::next(e) == s.end()) {
@@ -111,7 +112,7 @@ namespace JutchsON {
                 return c == 'e' || c == 'E';
             });
 
-            return parseDigits<T>({s.begin(), e}).then([&](T integral) -> ParseResult<T> {
+            return parseDigits<T>(std::string_view{s.begin(), e}).then([&](T integral) -> ParseResult<T> {
                 if (e == s.end()) {
                     return integral;
                 } else if (std::next(e) == s.end()) {

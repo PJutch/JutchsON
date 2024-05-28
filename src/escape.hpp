@@ -1,6 +1,8 @@
 #ifndef JUTCHSON_ESCAPE_HPP_
 #define JUTCHSON_ESCAPE_HPP_
 
+#include "StringView.hpp"
+
 #include <format>
 #include <string_view>
 #include <string>
@@ -33,7 +35,7 @@ namespace JutchsON {
         return std::format("'\\x{}{}'", digitChar(ubyte / 16), digitChar(ubyte % 16));
     }
 
-    inline std::string escapeChar(std::string_view s, ptrdiff_t i) {
+    inline std::string escapeChar(StringView s, ptrdiff_t i) {
         if (s.empty()) {
             return "''";
         }
@@ -52,7 +54,7 @@ namespace JutchsON {
             if (charLen > 4 || charLen == 0 || i + charLen > std::ssize(s) || charLen == 1 && s[i] < 32) {
                 return escapeHex(s[i]);
             } else {
-                return std::format("'{}'", s.substr(i, charLen));
+                return std::format("'{}'", s.substr(i, charLen).asStd());
             }
         }
     }
