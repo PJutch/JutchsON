@@ -1,6 +1,6 @@
 enable_testing()
 
-add_executable(tests "num.cpp" "Location.cpp" "ParseResult.cpp" "escape.cpp" "list.cpp")
+add_executable(tests "num.cpp" "Location.cpp" "ParseResult.cpp" "escape.cpp" "list.cpp" "StringView.cpp")
 
 target_link_libraries(tests test_dependencies)
 target_include_directories(tests PRIVATE ../src)

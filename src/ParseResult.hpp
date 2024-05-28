@@ -97,7 +97,7 @@ namespace JutchsON {
             }
             return os;
         } 
-    }P
+    }
 }
 
 #endif
