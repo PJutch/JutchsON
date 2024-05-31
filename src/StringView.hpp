@@ -4,6 +4,7 @@
 #include "Location.hpp"
 
 #include <string_view>
+#include <algorithm>
 #include <iterator>
 #include <concepts>
 #include <cstdint>
@@ -160,6 +161,10 @@ namespace JutchsON {
         char back() const {
             return base[offset + len - 1];
         }
+
+        friend bool operator == (const StringView& lhs, const StringView& rhs) {
+            return std::ranges::equal(lhs, rhs);
+        }
         
         void remove_prefix(ptrdiff_t n) {
             offset += n;
@@ -172,9 +177,9 @@ namespace JutchsON {
 
         StringView substr(int64_t pos, int64_t count = std::string_view::npos) {
             if (count == std::string_view::npos) {
-                return {begin() + offset + pos, begin() + offset + len};
+                return {begin() + pos, end()};
             }
-            return {begin() + offset + pos, begin() + std::min(offset + len, pos + count)};
+            return {begin() + pos, begin() + std::min(len, pos + count)};
         }
 
         Location location(int64_t pos = 0) const {

@@ -29,6 +29,10 @@ TEST(StringView, substrNoCount) {
     EXPECT_TRUE(std::ranges::equal(JutchsON::StringView{"abcdefg"}.substr(2), std::string_view{"cdefg"}));
 }
 
+TEST(StringView, substrSubstr) {
+    EXPECT_TRUE(std::ranges::equal(JutchsON::StringView{"abcdefg"}.substr(2, 5).substr(0, 3), std::string_view{"cde"}));
+}
+
 TEST(StringView, remove_prefix) {
     auto s = JutchsON::StringView{"abcdefg"};
     s.remove_prefix(2);

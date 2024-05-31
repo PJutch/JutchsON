@@ -8,13 +8,13 @@
 #include <cctype>
 
 namespace JutchsON {
-    inline ptrdiff_t findObjectBegin(std::string_view s) {
+    inline ptrdiff_t findObjectBegin(StringView s) {
         return std::ranges::find_if(s, [](char c) {
             return !isspace(c);
         }) - s.begin();
     }
 
-    inline ptrdiff_t findObjectEnd(std::string_view s) {
+    inline ptrdiff_t findObjectEnd(StringView s) {
         if (s.empty()) {
             return 0;
         }
@@ -38,13 +38,13 @@ namespace JutchsON {
         }
     }
 
-    inline ptrdiff_t findLineObjectBegin(std::string_view s) {
+    inline ptrdiff_t findLineObjectBegin(StringView s) {
         return std::ranges::find_if(s, [](char c) {
             return !isspace(c);
         }) - s.begin();
     }
 
-    inline ptrdiff_t findLineObjectEnd(std::string_view s) {
+    inline ptrdiff_t findLineObjectEnd(StringView s) {
         auto i = s.begin();
         while (i != s.end()) {
             auto next = std::ranges::find_if(i, s.end(), [](char c) {
@@ -60,7 +60,7 @@ namespace JutchsON {
         return std::ssize(s);
     }
 
-    inline bool isMultiline(std::string_view s) {
+    inline bool isMultiline(StringView s) {
         ptrdiff_t begin = findObjectBegin(s);
         while (begin < std::ssize(s)) {
             ptrdiff_t end = begin + findObjectEnd(s.substr(begin));
@@ -75,22 +75,22 @@ namespace JutchsON {
         return false;
     }
 
-    inline ParseResult<std::vector<std::string_view>> parseList(std::string_view s) {
+    inline ParseResult<std::vector<StringView>> parseList(StringView s) {
         if (s.empty()) {
-            return std::vector<std::string_view>{};
+            return std::vector<StringView>{};
         }
 
         if (s.front() == '[') {
             if (s.back() != ']') {
-                return ParseResult<std::vector<std::string_view>>::makeError({0, 0}, "Unmatched [");
+                return ParseResult<std::vector<StringView>>::makeError(s.location(), "Unmatched [");
             }
             s.remove_prefix(1);
             s.remove_suffix(1);
         } else if (s.back() == ']') {
-            return ParseResult<std::vector<std::string_view>>::makeError(Location::fromIndex(s, std::ssize(s) - 1), "Unmatched ]");
+            return ParseResult<std::vector<StringView>>::makeError(s.location(std::ssize(s) - 1), "Unmatched ]");
         }
 
-        std::vector<std::string_view> res;
+        std::vector<StringView> res;
         if (isMultiline(s)) {
             ptrdiff_t begin = findLineObjectBegin(s);
             while (begin < std::ssize(s)) {
