@@ -8,13 +8,23 @@ TEST(Object, findObjectBegin) {
 }
 
 TEST(Object, findObjectBeginSpace) {
-    std::string_view s = "  \n ab  cde j";
+    std::string_view s = "  \t ab  cde j";
     EXPECT_EQ(JutchsON::findOnelineObjectBegin(s), 4);
 }
 
+TEST(Object, findObjectBeginNewline) {
+    std::string_view s = "  \n ab  cde j";
+    EXPECT_EQ(JutchsON::findOnelineObjectBegin(s), 2);
+}
+
 TEST(Object, findObjectBeginSpaceOnly) {
-    std::string_view s = "  \n \t  ";
+    std::string_view s = "  \t \t  ";
     EXPECT_EQ(JutchsON::findOnelineObjectBegin(s), std::ssize(s));
+}
+
+TEST(Object, findObjectBeginNewlineOnly) {
+    std::string_view s = "  \n \t  ";
+    EXPECT_EQ(JutchsON::findOnelineObjectBegin(s), 2);
 }
 
 TEST(Object, findObjectBeginEmpty) {
@@ -174,4 +184,16 @@ TEST(Object, isMulitilineFalse) {
 
 TEST(Object, isMulitilineInBrackets) {
     EXPECT_FALSE(*JutchsON::isMultiline("ab [cd\n wxyz] j"));
+}
+
+TEST(Object, isMulitilineEnd) {
+    EXPECT_FALSE(*JutchsON::isMultiline("ab ce\n"));
+}
+
+TEST(Object, isMulitilineBegin) {
+    EXPECT_FALSE(*JutchsON::isMultiline("\nab ce wxyz cd j"));
+}
+
+TEST(Object, isMulitilineBothEnds) {
+    EXPECT_FALSE(*JutchsON::isMultiline("\nab ce wxyz cd j\n"));
 }

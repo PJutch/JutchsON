@@ -27,11 +27,11 @@ namespace JutchsON {
 
         std::vector<std::pair<StringView, StringView>> res;
         return isMultiline(s).then([&](bool multiline) -> ParseResult<std::vector<std::pair<StringView, StringView>>> {
-            ptrdiff_t keyBegin = findOnelineObjectBegin(s);
-            while (keyBegin < std::ssize(s)) {
+            ptrdiff_t keyBegin = findMultilineObjectBegin(s);
+            while (isObjectBegin(s, keyBegin)) {
                 if (auto relKeyEnd = findOnelineObjectEnd(s.substr(keyBegin))) {
                     ptrdiff_t keyEnd = keyBegin + *relKeyEnd;
-                    ptrdiff_t valueBegin = keyEnd + findObjectBegin(s.substr(keyEnd), multiline);
+                    ptrdiff_t valueBegin = keyEnd + findOnelineObjectBegin(s.substr(keyEnd));
                     if (valueBegin >= std::ssize(s)) {
                         return ParseResult<std::vector<std::pair<StringView, StringView>>>
                             ::makeError(s.location(std::ssize(s)), "No value given for key");
@@ -40,7 +40,7 @@ namespace JutchsON {
                     if (auto relValueEnd = findObjectEnd(s.substr(valueBegin), multiline)) {
                         ptrdiff_t valueEnd = valueBegin + *relValueEnd;
                         res.emplace_back(s.substr(keyBegin, keyEnd - keyBegin), s.substr(valueBegin, valueEnd - valueBegin));
-                        keyBegin = valueEnd + findOnelineObjectBegin(s.substr(valueEnd));
+                        keyBegin = valueEnd + findObjectBegin(s.substr(valueEnd), multiline);
                     } else {
                         return relValueEnd.errors();
                     }

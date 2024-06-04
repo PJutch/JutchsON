@@ -9,7 +9,7 @@
 namespace JutchsON {
     inline ptrdiff_t findOnelineObjectBegin(StringView s) {
         return std::ranges::find_if(s, [](char c) {
-            return !isspace(c);
+            return !isspace(c) || c == '\n';
         }) - s.begin();
     }
 
@@ -92,14 +92,22 @@ namespace JutchsON {
         }
     }
 
+    inline bool isObjectBegin(StringView s, ptrdiff_t i) {
+        return 0 <= i && i < std::ssize(s) && !isspace(s[i]);
+    }
+
     inline ParseResult<bool> isMultiline(StringView s) {
-        ptrdiff_t begin = findOnelineObjectBegin(s);
+        ptrdiff_t begin = findMultilineObjectBegin(s);
         while (begin < std::ssize(s)) {
             if (auto objectEnd = findOnelineObjectEnd(s.substr(begin))) {
                 ptrdiff_t end = begin + *objectEnd;
+
                 ptrdiff_t next = end + findOnelineObjectBegin(s.substr(end));
-                if (next != std::ssize(s) && std::ranges::find(s.begin() + end, s.begin() + next, '\n') != s.begin() + next) {
+                ptrdiff_t nextMultiline = end + findMultilineObjectBegin(s.substr(end));
+                if (next < std::ssize(s) && nextMultiline < std::ssize(s) && !isObjectBegin(s, next)) {
                     return true;
+                } else if (!isObjectBegin(s, next)) {
+                    return false;
                 }
                 begin = next;
             } else {

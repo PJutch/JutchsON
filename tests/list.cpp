@@ -85,3 +85,4 @@ TEST(List, parseListMultilineDoubleNewline) {
 TEST(List, parseListMultilineEmpty) {
     EXPECT_TRUE(JutchsON::parseList("\n\n\n")->empty());
 }
+

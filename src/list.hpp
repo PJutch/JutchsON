@@ -27,8 +27,8 @@ namespace JutchsON {
 
         return isMultiline(s).then([&](bool multiline) -> ParseResult<std::vector<StringView>> {
             std::vector<StringView> res;
-            ptrdiff_t begin = findObjectBegin(s, multiline);
-            while (begin < std::ssize(s)) {
+            ptrdiff_t begin = findMultilineObjectBegin(s);
+            while (isObjectBegin(s, begin)) {
                 if (auto objectEnd = findObjectEnd(s.substr(begin), multiline)) {
                     ptrdiff_t end = begin + *objectEnd;
                     res.push_back(s.substr(begin, end - begin));

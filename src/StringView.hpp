@@ -86,6 +86,10 @@ namespace JutchsON {
                 return base[i];
             }
 
+            const char* to_address() noexcept {
+                return std::to_address(base);
+            }
+
             std::string_view baseString() const {
                 return baseStr;
             }
@@ -198,5 +202,16 @@ namespace JutchsON {
 
 template <>
 inline constexpr bool std::ranges::enable_borrowed_range<JutchsON::StringView> = true;
+
+template <>
+struct std::pointer_traits<JutchsON::StringView::iterator> {
+    using pointer = JutchsON::StringView::iterator;
+    using element_type = const char;
+    using difference_type = ptrdiff_t;
+
+    static element_type* to_address(pointer p) {
+        return p.to_address();
+    }
+};
 
 #endif
