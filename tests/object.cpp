@@ -163,3 +163,15 @@ TEST(Object, findLineObjectAllInBrackets) {
     std::string_view s = "[ab ce\n wxyz cd\n j]";
     EXPECT_EQ(JutchsON::findLineObjectEnd(s), std::ssize(s));
 }
+
+TEST(Object, isMulitiline) {
+    EXPECT_TRUE(*JutchsON::isMultiline("ab ce\n wxyz cd\n j"));
+}
+
+TEST(Object, isMulitilineFalse) {
+    EXPECT_FALSE(*JutchsON::isMultiline("ab ce j"));
+}
+
+TEST(Object, isMulitilineInBrackets) {
+    EXPECT_FALSE(*JutchsON::isMultiline("ab [cd\n wxyz] j"));
+}

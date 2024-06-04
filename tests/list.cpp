@@ -2,18 +2,6 @@
 
 #include <gtest/gtest.h>
 
-TEST(List, isMulitiline) {
-    EXPECT_TRUE(*JutchsON::isMultiline("ab ce\n wxyz cd\n j"));
-}
-
-TEST(List, isMulitilineFalse) {
-    EXPECT_FALSE(*JutchsON::isMultiline("ab ce j"));
-}
-
-TEST(List, isMulitilineInBrackets) {
-    EXPECT_FALSE(*JutchsON::isMultiline("ab [cd\n wxyz] j"));
-}
-
 TEST(List, parseList) {
     EXPECT_EQ(JutchsON::parseList("ab\t cde j"), (std::vector<JutchsON::StringView>{"ab", "cde", "j"}));
 }

@@ -75,6 +75,23 @@ namespace JutchsON {
         }
         return std::ssize(s);
     }
+
+    inline ParseResult<bool> isMultiline(StringView s) {
+        ptrdiff_t begin = findObjectBegin(s);
+        while (begin < std::ssize(s)) {
+            if (auto objectEnd = findObjectEnd(s.substr(begin))) {
+                ptrdiff_t end = begin + *objectEnd;
+                ptrdiff_t next = end + findObjectBegin(s.substr(end));
+                if (next != std::ssize(s) && std::ranges::find(s.begin() + end, s.begin() + next, '\n') != s.begin() + next) {
+                    return true;
+                }
+                begin = next;
+            } else {
+                return objectEnd.errors();
+            }
+        }
+        return false;
+    }
 }
 
 #endif
