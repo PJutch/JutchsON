@@ -4,6 +4,7 @@
 #include "ParseResult.hpp"
 #include "object.hpp"
 
+#include <vector>
 #include <algorithm>
 #include <string_view>
 #include <cctype>
@@ -24,29 +25,16 @@ namespace JutchsON {
             return ParseResult<std::vector<StringView>>::makeError(s.location(std::ssize(s) - 1), "Unmatched ]");
         }
 
-        std::vector<StringView> res;
-        return isMultiline(s).then([&](bool is) -> ParseResult<std::vector<StringView>> {
-            if (is) {
-                ptrdiff_t begin = findLineObjectBegin(s);
-                while (begin < std::ssize(s)) {
-                    if (auto objectEnd = findLineObjectEnd(s.substr(begin))) {
-                        ptrdiff_t end = begin + *objectEnd;
-                        res.push_back(s.substr(begin, end - begin));
-                        begin = end + findLineObjectBegin(s.substr(end));
-                    } else {
-                        return objectEnd.errors();
-                    }
-                }
-            } else {
-                ptrdiff_t begin = findObjectBegin(s);
-                while (begin < std::ssize(s)) {
-                    if (auto objectEnd = findObjectEnd(s.substr(begin))) {
-                        ptrdiff_t end = begin + *objectEnd;
-                        res.push_back(s.substr(begin, end - begin));
-                        begin = end + findObjectBegin(s.substr(end));
-                    } else {
-                        return objectEnd.errors();
-                    }
+        return isMultiline(s).then([&](bool multiline) -> ParseResult<std::vector<StringView>> {
+            std::vector<StringView> res;
+            ptrdiff_t begin = findObjectBegin(s, multiline);
+            while (begin < std::ssize(s)) {
+                if (auto objectEnd = findObjectEnd(s.substr(begin), multiline)) {
+                    ptrdiff_t end = begin + *objectEnd;
+                    res.push_back(s.substr(begin, end - begin));
+                    begin = end + findObjectBegin(s.substr(end), multiline);
+                } else {
+                    return objectEnd.errors();
                 }
             }
             return res;
