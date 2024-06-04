@@ -66,7 +66,7 @@ namespace JutchsON {
             });
 
             if (next == s.end() || *next == '\n') {
-                return next - s.begin();
+                return i - s.begin();
             }
 
             if (auto objectEnd = findOnelineObjectEnd({next, s.end()})) {

@@ -111,7 +111,7 @@ TEST(Object, findObjectEndBrace) {
 
 TEST(Object, findLineObjectEnd) {
     std::string_view s = "ab \n cde j";
-    EXPECT_EQ(JutchsON::findMultilineObjectEnd(s), 3);
+    EXPECT_EQ(JutchsON::findMultilineObjectEnd(s), 2);
 }
 
 TEST(Object, findLineObjectEnd1Line) {

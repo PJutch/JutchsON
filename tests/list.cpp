@@ -66,6 +66,10 @@ TEST(List, parseListMultiline) {
     EXPECT_EQ(JutchsON::parseList("ab\n cde wxyz"), (std::vector<JutchsON::StringView>{"ab", "cde wxyz"}));
 }
 
+TEST(List, parseListMultilineSpace) {
+    EXPECT_EQ(JutchsON::parseList("ab \n cde wxyz"), (std::vector<JutchsON::StringView>{"ab", "cde wxyz"}));
+}
+
 TEST(List, parseListMultilineBrackets) {
     EXPECT_EQ(JutchsON::parseList("[ab\n cde wxyz]"), (std::vector<JutchsON::StringView>{"ab", "cde wxyz"}));
 }
