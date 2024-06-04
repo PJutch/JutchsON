@@ -7,5 +7,6 @@
 #include "Location.hpp"
 #include "ParseResult.hpp"
 #include "escape.hpp"
+#include "object.hpp"
 
 #endif
