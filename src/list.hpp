@@ -9,17 +9,19 @@
 #include <cctype>
 
 namespace JutchsON {
-    inline bool isMultiline(StringView s) {
+    inline ParseResult<bool> isMultiline(StringView s) {
         ptrdiff_t begin = findObjectBegin(s);
         while (begin < std::ssize(s)) {
-            ptrdiff_t end = begin + findObjectEnd(s.substr(begin));
-            ptrdiff_t next = end + findObjectBegin(s.substr(end));
-
-            if (next != std::ssize(s) && std::ranges::find(s.begin() + end, s.begin() + next, '\n') != s.begin() + next) {
-                return true;
+            if (auto objectEnd = findObjectEnd(s.substr(begin))) {
+                ptrdiff_t end = begin + *objectEnd;
+                ptrdiff_t next = end + findObjectBegin(s.substr(end));
+                if (next != std::ssize(s) && std::ranges::find(s.begin() + end, s.begin() + next, '\n') != s.begin() + next) {
+                    return true;
+                }
+                begin = next;
+            } else {
+                return objectEnd.errors();
             }
-
-            begin = next;
         }
         return false;
     }
@@ -40,22 +42,32 @@ namespace JutchsON {
         }
 
         std::vector<StringView> res;
-        if (isMultiline(s)) {
-            ptrdiff_t begin = findLineObjectBegin(s);
-            while (begin < std::ssize(s)) {
-                ptrdiff_t end = begin + findLineObjectEnd(s.substr(begin));
-                res.push_back(s.substr(begin, end - begin));
-                begin = end + findLineObjectBegin(s.substr(end));
+        return isMultiline(s).then([&](bool is) -> ParseResult<std::vector<StringView>> {
+            if (is) {
+                ptrdiff_t begin = findLineObjectBegin(s);
+                while (begin < std::ssize(s)) {
+                    if (auto objectEnd = findLineObjectEnd(s.substr(begin))) {
+                        ptrdiff_t end = begin + *objectEnd;
+                        res.push_back(s.substr(begin, end - begin));
+                        begin = end + findLineObjectBegin(s.substr(end));
+                    } else {
+                        return objectEnd.errors();
+                    }
+                }
+            } else {
+                ptrdiff_t begin = findObjectBegin(s);
+                while (begin < std::ssize(s)) {
+                    if (auto objectEnd = findObjectEnd(s.substr(begin))) {
+                        ptrdiff_t end = begin + *objectEnd;
+                        res.push_back(s.substr(begin, end - begin));
+                        begin = end + findObjectBegin(s.substr(end));
+                    } else {
+                        return objectEnd.errors();
+                    }
+                }
             }
-        } else {
-            ptrdiff_t begin = findObjectBegin(s);
-            while (begin < std::ssize(s)) {
-                ptrdiff_t end = begin + findObjectEnd(s.substr(begin));
-                res.push_back(s.substr(begin, end - begin));
-                begin = end + findObjectBegin(s.substr(end));
-            }
-        }
-        return res;
+            return res;
+        });
     }
 }
 

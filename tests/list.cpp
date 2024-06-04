@@ -3,15 +3,15 @@
 #include <gtest/gtest.h>
 
 TEST(List, isMulitiline) {
-    EXPECT_TRUE(JutchsON::isMultiline("ab ce\n wxyz cd\n j"));
+    EXPECT_TRUE(*JutchsON::isMultiline("ab ce\n wxyz cd\n j"));
 }
 
 TEST(List, isMulitilineFalse) {
-    EXPECT_FALSE(JutchsON::isMultiline("ab ce j"));
+    EXPECT_FALSE(*JutchsON::isMultiline("ab ce j"));
 }
 
 TEST(List, isMulitilineInBrackets) {
-    EXPECT_FALSE(JutchsON::isMultiline("ab [cd\n wxyz] j"));
+    EXPECT_FALSE(*JutchsON::isMultiline("ab [cd\n wxyz] j"));
 }
 
 TEST(List, parseList) {
@@ -35,11 +35,11 @@ TEST(List, parseListSingle) {
 }
 
 TEST(List, parseListOnlySpaces) {
-    EXPECT_TRUE(JutchsON::parseList("    ").getOk().empty());
+    EXPECT_TRUE(JutchsON::parseList("    ")->empty());
 }
 
 TEST(List, parseListEmpty) {
-    EXPECT_TRUE(JutchsON::parseList("").getOk().empty());
+    EXPECT_TRUE(JutchsON::parseList("")->empty());
 }
 
 TEST(List, parseListNested) {
@@ -63,7 +63,7 @@ TEST(List, parseListBrackets) {
 }
 
 TEST(List, parseListEmptyBrackets) {
-    EXPECT_TRUE(JutchsON::parseList("[]").getOk().empty());
+    EXPECT_TRUE(JutchsON::parseList("[]")->empty());
 }
 
 TEST(List, parseListUnmatchedOpeningBracket) {
@@ -91,5 +91,5 @@ TEST(List, parseListMultilineDoubleNewline) {
 }
 
 TEST(List, parseListMultilineEmpty) {
-    EXPECT_TRUE(JutchsON::parseList("\n\n\n").getOk().empty());
+    EXPECT_TRUE(JutchsON::parseList("\n\n\n")->empty());
 }

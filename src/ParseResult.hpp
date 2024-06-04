@@ -35,11 +35,57 @@ namespace JutchsON {
 
         friend bool operator == (const ParseResult&, const ParseResult&) = default;
 
-        T getOk() const {
+        template <typename U> requires !std::same_as<U, ParseResult<T>> && std::equality_comparable_with<U, T>
+        friend bool operator == (const ParseResult& result, const U& value) {
+            return result && *result == value;
+        }
+
+        template <typename U> requires !std::same_as<U, ParseResult<T>> && std::equality_comparable_with<U, T>
+        friend bool operator == (const U& value, const ParseResult& result) {
+            return result == value;
+        }
+
+        explicit operator bool() const {
+            return std::holds_alternative<T>(data);
+        }
+
+        T& operator *() {
+            if (T* value = std::get_if<T>(&data)) {
+                return *value;
+            } else {
+                throw std::logic_error{"Expected parsing to be successful when it isn't"};
+            }
+        }
+
+        const T& operator *() const {
             if (const T* value = std::get_if<T>(&data)) {
                 return *value;
             } else {
                 throw std::logic_error{"Expected parsing to be successful when it isn't"};
+            }
+        }
+
+        T* operator->() {
+            if (T* value = std::get_if<T>(&data)) {
+                return value;
+            } else {
+                throw std::logic_error{"Expected parsing to be successful when it isn't"};
+            }
+        }
+
+        const T* operator->() const {
+            if (const T* value = std::get_if<T>(&data)) {
+                return value;
+            } else {
+                throw std::logic_error{"Expected parsing to be successful when it isn't"};
+            }
+        }
+
+        const std::vector<ParseError>& errors() {
+            if (const auto* errors = std::get_if<std::vector<ParseError>>(&data)) {
+                return *errors;
+            } else {
+                throw std::logic_error{"Expected parsing to not be successful when it is"};
             }
         }
 

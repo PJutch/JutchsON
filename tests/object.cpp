@@ -62,6 +62,28 @@ TEST(Object, findObjectEndNestedBrackets) {
     EXPECT_EQ(JutchsON::findObjectEnd(s), 16);
 }
 
+TEST(Object, findObjectEndNoBracket) {
+    std::string_view s = "[abc ij xyz";
+    JutchsON::Location location{0, std::ssize(s)};
+    EXPECT_EQ(JutchsON::findObjectEnd(s), JutchsON::ParseResult<ptrdiff_t>::makeError(location, "Expected ], got eof"));
+}
+
+TEST(Object, findObjectEndWrongBracket) {
+    std::string_view s = "{abc ij] xyz";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), JutchsON::ParseResult<ptrdiff_t>::makeError(JutchsON::Location{0, 7}, "Expected }, got ]"));
+}
+
+TEST(Object, findObjectEndNoBrace) {
+    std::string_view s = "{abc ij xyz";
+    JutchsON::Location location{0, std::ssize(s)};
+    EXPECT_EQ(JutchsON::findObjectEnd(s), JutchsON::ParseResult<ptrdiff_t>::makeError(location, "Expected }, got eof"));
+}
+
+TEST(Object, findObjectEndWrongBrace) {
+    std::string_view s = "[abc ij} xyz";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), JutchsON::ParseResult<ptrdiff_t>::makeError(JutchsON::Location{0, 7}, "Expected ], got }"));
+}
+
 TEST(Object, findObjectEndBraces) {
     std::string_view s = "{abc de j}  fgh\n ";
     EXPECT_EQ(JutchsON::findObjectEnd(s), 10);

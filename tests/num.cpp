@@ -43,11 +43,11 @@ TEST(Num, parseUintDoubleSep) {
 }
 
 TEST(Num, parseUintExp) {
-	EXPECT_EQ(JutchsON::parseUint("12e5"), 1'200'000);
+	EXPECT_EQ(JutchsON::parseUint("12e5"), 1'200'000u);
 }
 
 TEST(Num, parseUint1Exp) {
-	EXPECT_EQ(JutchsON::parseUint("1e5"), 100'000);
+	EXPECT_EQ(JutchsON::parseUint("1e5"), 100'000u);
 }
 
 TEST(Num, parseUintNoExp) {
@@ -111,7 +111,7 @@ TEST(Num, powIntExpM1) {
 }
 
 TEST(Num, powIntExpNegative) {
-	EXPECT_FLOAT_EQ(JutchsON::powIntExp(10.0, -5), 1e-5);
+	EXPECT_DOUBLE_EQ(JutchsON::powIntExp(10.0, -5), 1e-5);
 }
 
 TEST(Num, parseNonnegativeFloat) {
@@ -131,7 +131,7 @@ TEST(Num, parseNonnegativeFloatDotLeading0) {
 }
 
 TEST(Num, parseNonnegativeFloatLess1) {
-	EXPECT_FLOAT_EQ(JutchsON::parseNonnegativeFloat("0.01").getOk(), 0.01);
+	EXPECT_DOUBLE_EQ(*JutchsON::parseNonnegativeFloat("0.01"), 0.01);
 }
 
 TEST(Num, parseNonnegativeFloat0) {
@@ -155,7 +155,7 @@ TEST(Num, parseNonnegativeFloatExp) {
 }
 
 TEST(Num, parseNonnegativeFloatNegExp) {
-	EXPECT_FLOAT_EQ(JutchsON::parseNonnegativeFloat("1.23e-2").getOk(), 1.23e-2);
+	EXPECT_DOUBLE_EQ(*JutchsON::parseNonnegativeFloat("1.23e-2"), 1.23e-2);
 }
 
 TEST(Num, parseNonnegativeFloatNoExp) {
@@ -167,7 +167,7 @@ TEST(Num, parseNonnegativeFloatIntExp) {
 }
 
 TEST(Num, parseNonnegativeFloatIntNegExp) {
-	EXPECT_FLOAT_EQ(JutchsON::parseNonnegativeFloat("123e-2").getOk(), 1.23);
+	EXPECT_DOUBLE_EQ(*JutchsON::parseNonnegativeFloat("123e-2"), 1.23);
 }
 
 TEST(Num, parseNonnegativeFloatIntNoExp) {
@@ -179,7 +179,7 @@ TEST(Num, parseNonnegativeFloatIntDotExp) {
 }
 
 TEST(Num, parseNonnegativeFloatIntDotNegExp) {
-	EXPECT_FLOAT_EQ(JutchsON::parseNonnegativeFloat("123.e-2").getOk(), 1.23);
+	EXPECT_DOUBLE_EQ(*JutchsON::parseNonnegativeFloat("123.e-2"), 1.23);
 }
 
 TEST(Num, parseNonnegativeFloatIntDotNoExp) {
@@ -203,7 +203,7 @@ TEST(Num, parseFloatMinus0) {
 }
 
 TEST(Num, parseFloatMinusGreaterMinus1) {
-	EXPECT_FLOAT_EQ(JutchsON::parseFloat("-0.01").getOk(), -0.01);
+	EXPECT_DOUBLE_EQ(*JutchsON::parseFloat("-0.01"), -0.01);
 }
 
 TEST(Num, parseNonnegativeFloatSignGarbage) {
@@ -215,9 +215,9 @@ TEST(Num, parseNonnegativeFloatSignDotGarbage) {
 }
 
 TEST(Num, parseFloatExp) {
-	EXPECT_EQ(JutchsON::parseFloat("1.23e5"), 123'000);
+	EXPECT_EQ(JutchsON::parseFloat("1.23e5"), 123'000.0);
 }
 
 TEST(Num, parseFloatMinusExp) {
-	EXPECT_EQ(JutchsON::parseFloat("-1.23e5"), -123'000);
+	EXPECT_EQ(JutchsON::parseFloat("-1.23e5"), -123'000.0);
 }
