@@ -3,6 +3,8 @@
 
 #include "StringView.hpp"
 
+#include <vector>
+
 namespace JutchsON {
     inline ptrdiff_t findObjectBegin(StringView s) {
         return std::ranges::find_if(s, [](char c) {
@@ -15,21 +17,29 @@ namespace JutchsON {
             return 0;
         }
 
-        if (s.front() == '[') {
-            ptrdiff_t balance = 0;
+        if (s.front() == '[' || s.front() == '{') {
+            std::vector<char> brackets;
             ptrdiff_t i = 0;
             do {
-                if (s[i] == '[') {
-                    ++balance;
+                if (s[i] == '[' || s[i] == '{') {
+                    brackets.push_back(s[i]);
                 } else if (s[i] == ']') {
-                    --balance;
+                    if (brackets.back() != '[') {
+                        return i;
+                    }
+                    brackets.pop_back();
+                } else if (s[i] == '}') {
+                    if (brackets.back() != '{') {
+                        return i;
+                    }
+                    brackets.pop_back();
                 }
                 ++i;
-            } while (balance > 0 && i < std::ssize(s));
+            } while (std::ssize(brackets) > 0 && i < std::ssize(s));
             return i;
         } else {
             return std::ranges::find_if(s, [](char c) {
-                return isspace(c) || c == '[';
+                return isspace(c) || c == '[' || c == '{';
             }) - s.begin();
         }
     }

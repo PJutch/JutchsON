@@ -47,6 +47,46 @@ TEST(Object, findObjectEndEnd) {
     EXPECT_EQ(JutchsON::findObjectEnd(s), std::ssize(s));
 }
 
+TEST(Object, findObjectEndAllInBrackets) {
+    std::string_view s = "[abcdej]";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), std::ssize(s));
+}
+
+TEST(Object, findObjectEndBrackets) {
+    std::string_view s = "[abc de j]  fgh\n ";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), 10);
+}
+
+TEST(Object, findObjectEndNestedBrackets) {
+    std::string_view s = "[abc [de j] xyz]  fgh\n ";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), 16);
+}
+
+TEST(Object, findObjectEndBraces) {
+    std::string_view s = "{abc de j}  fgh\n ";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), 10);
+}
+
+TEST(Object, findObjectEndNestedBraces) {
+    std::string_view s = "{abc {de j} xyz}  fgh\n ";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), 16);
+}
+
+TEST(Object, findObjectEndNestedDifferent) {
+    std::string_view s = "[abc {de j} xyz]  fgh\n ";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), 16);
+}
+
+TEST(Object, findObjectEndBracket) {
+    std::string_view s = "fgh[abcxy]";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), 3);
+}
+
+TEST(Object, findObjectEndBrace) {
+    std::string_view s = "fgh{abcxy}";
+    EXPECT_EQ(JutchsON::findObjectEnd(s), 3);
+}
+
 TEST(Object, findLineObjectEnd) {
     std::string_view s = "ab \n cde j";
     EXPECT_EQ(JutchsON::findLineObjectEnd(s), 3);
@@ -67,17 +107,37 @@ TEST(Object, findLineObjectEndEmpty) {
     EXPECT_EQ(JutchsON::findLineObjectEnd(s), 0);
 }
 
-TEST(Object, findLineObjectNewlineInList) {
+TEST(Object, findLineObjectNewlineInBrackets) {
     std::string_view s = "ab [ce \nwxyz] cd\n j";
     EXPECT_EQ(JutchsON::findLineObjectEnd(s), 16);
 }
 
-TEST(Object, findLineObjectNoNewlineInList) {
+TEST(Object, findLineObjectNewlineInNestedBrackets) {
+    std::string_view s = "ab [ce[ \nw]xyz] cd\n j";
+    EXPECT_EQ(JutchsON::findLineObjectEnd(s), 18);
+}
+
+TEST(Object, findLineObjectNewlineInBraces) {
+    std::string_view s = "ab {ce \nwxyz} cd\n j";
+    EXPECT_EQ(JutchsON::findLineObjectEnd(s), 16);
+}
+
+TEST(Object, findLineObjectNewlineInNestedBraces) {
+    std::string_view s = "ab {ce{ \nw}xyz} cd\n j";
+    EXPECT_EQ(JutchsON::findLineObjectEnd(s), 18);
+}
+
+TEST(Object, findLineObjectNewlineInNestedDifferent) {
+    std::string_view s = "ab [ce{ \nw}xyz] cd\n j";
+    EXPECT_EQ(JutchsON::findLineObjectEnd(s), 18);
+}
+
+TEST(Object, findLineObjectNoNewlineInBrackets) {
     std::string_view s = "ab [ce wxyz] cd\n j";
     EXPECT_EQ(JutchsON::findLineObjectEnd(s), 15);
 }
 
-TEST(Object, findLineObjectListOnly) {
+TEST(Object, findLineObjectAllInBrackets) {
     std::string_view s = "[ab ce\n wxyz cd\n j]";
     EXPECT_EQ(JutchsON::findLineObjectEnd(s), std::ssize(s));
 }
