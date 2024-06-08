@@ -4,6 +4,7 @@
 #include "num.hpp"
 #include "list.hpp"
 #include "dict.hpp"
+#include "str.hpp"
 
 #include "Location.hpp"
 #include "ParseResult.hpp"
