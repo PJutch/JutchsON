@@ -119,6 +119,38 @@ TEST(Object, findObjectEndBrace) {
     EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 3);
 }
 
+TEST(Object, findObjectEndQuotes) {
+    std::string_view s = "\"wdkj [wj abc\" defgh ij";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 14);
+}
+
+TEST(Object, findObjectEndEscapeQuote) {
+    std::string_view s = "\"wdkj \\\"wj abc\" defgh ij";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 15);
+}
+
+TEST(Object, findObjectEndEscapeSlash) {
+    std::string_view s = "\"wdkj [wj abc\\\\\" defgh ij";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 16);
+}
+
+TEST(Object, findObjectEndQuote) {
+    std::string_view s = "abc\"str\"";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 3);
+}
+
+TEST(Object, findObjectEndUnmatchedQuote) {
+    std::string_view s = "\"str [jk w";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 
+        JutchsON::ParseResult<ptrdiff_t>::makeError(JutchsON::Location{0, std::ssize(s)}, "Expected closing \", got eof"));
+}
+
+TEST(Object, findObjectEndBrokenEscape) {
+    std::string_view s = "\"str [jk w\\";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s),
+        JutchsON::ParseResult<ptrdiff_t>::makeError(JutchsON::Location{0, std::ssize(s)}, "Expected escape sequence, got eof after \\"));
+}
+
 TEST(Object, findLineObjectEnd) {
     std::string_view s = "ab \n cde j";
     EXPECT_EQ(JutchsON::findMultilineObjectEnd(s), 2);
