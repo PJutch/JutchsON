@@ -11,6 +11,8 @@
 
 namespace JutchsON {
     inline ParseResult<std::vector<std::pair<StringView, StringView>>> parseDict(StringView s) {
+        s = strip(s);
+
         if (s.empty()) {
             return std::vector<std::pair<StringView, StringView>>{};
         }
@@ -19,15 +21,17 @@ namespace JutchsON {
             if (s.back() != '}') {
                 return ParseResult<std::vector<std::pair<StringView, StringView>>>::makeError(s.location(), "Unmatched {");
             }
+
             s.remove_prefix(1);
             s.remove_suffix(1);
+            s = strip(s);
         } else if (s.back() == '}') {
             return ParseResult<std::vector<std::pair<StringView, StringView>>>::makeError(s.location(std::ssize(s) - 1), "Unmatched }");
         }
 
         std::vector<std::pair<StringView, StringView>> res;
         return isMultiline(s).then([&](bool multiline) -> ParseResult<std::vector<std::pair<StringView, StringView>>> {
-            ptrdiff_t keyBegin = findMultilineObjectBegin(s);
+            ptrdiff_t keyBegin = 0;
             while (isObjectBegin(s, keyBegin)) {
                 if (auto relKeyEnd = findOnelineObjectEnd(s.substr(keyBegin))) {
                     ptrdiff_t keyEnd = keyBegin + *relKeyEnd;

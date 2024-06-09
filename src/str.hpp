@@ -24,6 +24,8 @@ namespace JutchsON {
     }
 
     inline ParseResult<std::string> parseStr(StringView s) {
+        s = strip(s);
+
         if (s.empty()) {
             return std::string{};
         }

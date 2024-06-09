@@ -147,7 +147,7 @@ namespace JutchsON {
         }
 
         bool empty() const {
-            return base.empty();
+            return size() == 0;
         }
 
         const char* data() const {

@@ -4,6 +4,7 @@
 #include "StringView.hpp"
 #include "ParseResult.hpp"
 #include "escape.hpp"
+#include "strip.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -72,6 +73,8 @@ namespace JutchsON {
 
     template <typename T = unsigned int>
     ParseResult<T> parseUint(StringView s) {
+        s = strip(s);
+
         auto e = std::ranges::find_if(s, [](char c) {
             return c == 'e' || c == 'E';
         });
@@ -93,6 +96,8 @@ namespace JutchsON {
 
     template <typename T = int>
     ParseResult<T> parseInt(StringView s) {
+        s = strip(s);
+
         if (s.empty()) {
             return ParseResult<T>::makeError(s.location(), "Number can't be empty str");
         } else if (s.front() == '+') {
@@ -106,6 +111,8 @@ namespace JutchsON {
 
     template <typename T = double>
     ParseResult<T> parseNonnegativeFloat(StringView s) {
+        s = strip(s);
+
         auto dot = std::ranges::find(s, '.');
         if (dot == s.end()) {
             auto e = std::ranges::find_if(s, [](char c) {
@@ -163,6 +170,8 @@ namespace JutchsON {
 
     template <typename T = double>
     ParseResult<T> parseFloat(StringView s) {
+        s = strip(s);
+
         if (s.empty()) {
             return ParseResult<T>::makeError(s.location(), "Number can't be empty str");
         } else if (s.front() == '+') {

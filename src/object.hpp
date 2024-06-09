@@ -109,17 +109,16 @@ namespace JutchsON {
     }
 
     inline ParseResult<bool> isMultiline(StringView s) {
-        ptrdiff_t begin = findMultilineObjectBegin(s);
+        s = strip(s);
+
+        ptrdiff_t begin = 0;
         while (begin < std::ssize(s)) {
             if (auto objectEnd = findOnelineObjectEnd(s.substr(begin))) {
                 ptrdiff_t end = begin + *objectEnd;
 
                 ptrdiff_t next = end + findOnelineObjectBegin(s.substr(end));
-                ptrdiff_t nextMultiline = end + findMultilineObjectBegin(s.substr(end));
-                if (next < std::ssize(s) && nextMultiline < std::ssize(s) && !isObjectBegin(s, next)) {
+                if (next < std::ssize(s) && !isObjectBegin(s, next)) {
                     return true;
-                } else if (!isObjectBegin(s, next)) {
-                    return false;
                 }
                 begin = next;
             } else {
