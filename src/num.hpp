@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <cmath>
 #include <format>
 #include <string_view>
 #include <string>
@@ -205,6 +206,54 @@ namespace JutchsON {
             return '-' + writeUint(-s);
         }
         return writeUint(s);
+    }
+
+    template <typename T>
+    std::string writeNonnegativeFloat(T s) {
+        std::string res;
+
+        T intpart;
+        T fractpart = modf(s, &intpart);
+
+        if (intpart == 0) {
+            res.push_back('0');
+        }
+
+        while (intpart > 0) {
+            res.push_back('0' + static_cast<ptrdiff_t>(fmod(intpart, 10)));
+
+            intpart /= 10;
+            modf(intpart, &intpart);
+        }
+
+        std::ranges::reverse(res);
+        res.push_back('.');
+
+        for (ptrdiff_t i = 0; i < 18; ++i) {
+            fractpart *= 10;
+
+            T digit;
+            fractpart = modf(fractpart, &digit);
+            res.push_back('0' + static_cast<ptrdiff_t>(digit));
+        }
+
+        while (res.back() == '0') {
+            res.pop_back();
+        }
+
+        if (res.back() == '.') {
+            res.pop_back();
+        }
+
+        return res;
+    }
+
+    template <typename T>
+    std::string writeFloat(T s) {
+        if (std::signbit(s)) {
+            return '-' + writeNonnegativeFloat(-s);
+        }
+        return writeNonnegativeFloat(s);
     }
 }
 

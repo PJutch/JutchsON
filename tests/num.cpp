@@ -249,3 +249,39 @@ TEST(Num, writeIntZero) {
 TEST(Num, writeIntNegative) {
 	EXPECT_EQ(JutchsON::writeInt(-123), "-123");
 }
+
+TEST(Num, writeNonnegativeFloat) {
+	EXPECT_EQ(JutchsON::writeNonnegativeFloat(1.25), "1.25");
+}
+
+TEST(Num, writeNonnegativeFloatZeroInt) {
+	EXPECT_EQ(JutchsON::writeNonnegativeFloat(0.25), "0.25");
+}
+
+TEST(Num, writeNonnegativeFloatLeadingZeroFloat) {
+	EXPECT_EQ(JutchsON::writeNonnegativeFloat(0.0625), "0.0625");
+}
+
+TEST(Num, writeNonnegativeFloatInt) {
+	EXPECT_EQ(JutchsON::writeNonnegativeFloat(123.), "123");
+}
+
+TEST(Num, writeFloat) {
+	EXPECT_EQ(JutchsON::writeFloat(1.25), "1.25");
+}
+
+TEST(Num, writeFloatZeroInt) {
+	EXPECT_EQ(JutchsON::writeFloat(0.25), "0.25");
+}
+
+TEST(Num, writeFloatNegative) {
+	EXPECT_EQ(JutchsON::writeFloat(-1.25), "-1.25");
+}
+
+TEST(Num, writeFloatZero) {
+	EXPECT_EQ(JutchsON::writeFloat(0.), "0");
+}
+
+TEST(Num, writeFloatNegativeZero) {
+	EXPECT_EQ(JutchsON::writeFloat(-0.), "-0");
+}
