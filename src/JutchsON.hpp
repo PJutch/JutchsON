@@ -10,5 +10,6 @@
 #include "ParseResult.hpp"
 #include "escape.hpp"
 #include "object.hpp"
+#include "strip.hpp"
 
 #endif
