@@ -233,3 +233,19 @@ TEST(Num, writeUintInt) {
 TEST(Num, writeUintZero) {
 	EXPECT_EQ(JutchsON::writeUint(0u), "0");
 }
+
+TEST(Num, writeInt) {
+	EXPECT_EQ(JutchsON::writeInt(123), "123");
+}
+
+TEST(Num, writeIntUnsgined) {
+	EXPECT_EQ(JutchsON::writeInt(123u), "123");
+}
+
+TEST(Num, writeIntZero) {
+	EXPECT_EQ(JutchsON::writeInt(0), "0");
+}
+
+TEST(Num, writeIntNegative) {
+	EXPECT_EQ(JutchsON::writeInt(-123), "-123");
+}

@@ -198,6 +198,14 @@ namespace JutchsON {
         std::ranges::reverse(res);
         return res;
     }
+
+    template <typename T>
+    std::string writeInt(T s) {
+        if (s < 0) {
+            return '-' + writeUint(-s);
+        }
+        return writeUint(s);
+    }
 }
 
 #endif
