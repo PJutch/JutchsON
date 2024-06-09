@@ -221,3 +221,15 @@ TEST(Num, parseFloatExp) {
 TEST(Num, parseFloatMinusExp) {
 	EXPECT_EQ(JutchsON::parseFloat("-1.23e5"), -123'000.0);
 }
+
+TEST(Num, writeUint) {
+	EXPECT_EQ(JutchsON::writeUint(123u), "123");
+}
+
+TEST(Num, writeUintInt) {
+	EXPECT_EQ(JutchsON::writeUint(123), "123");
+}
+
+TEST(Num, writeUintZero) {
+	EXPECT_EQ(JutchsON::writeUint(0u), "0");
+}

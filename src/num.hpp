@@ -182,6 +182,22 @@ namespace JutchsON {
             return parseNonnegativeFloat<T>(s);
         }
     }
+
+    template <typename T>
+    std::string writeUint(T s) {
+        if (s == 0) {
+            return "0";
+        }
+
+        std::string res;
+        while (s > 0) {
+            res.push_back('0' + s % 10);
+            s /= 10;
+        }
+
+        std::ranges::reverse(res);
+        return res;
+    }
 }
 
 #endif
