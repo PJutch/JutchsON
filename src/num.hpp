@@ -217,6 +217,12 @@ namespace JutchsON {
 
     template <typename T>
     std::string writeNonnegativeFloat(T s) {
+        if (isnan(s)) {
+            return "nan";
+        } else if (isinf(s)) {
+            return "inf";
+        }
+
         std::string res;
 
         T intpart;
