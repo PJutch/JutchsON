@@ -32,31 +32,43 @@ namespace JutchsON {
 
     inline std::string escapeHex(char byte) {
         auto ubyte = static_cast<unsigned char>(byte);
-        return std::format("'\\x{}{}'", digitChar(ubyte / 16), digitChar(ubyte % 16));
+        return std::format("\\x{}{}", digitChar(ubyte / 16), digitChar(ubyte % 16));
     }
 
     inline std::string escapeChar(StringView s, ptrdiff_t i) {
         if (s.empty()) {
-            return "''";
+            return "";
         }
 
         ptrdiff_t charLen = getCharLen(s[i]);
         switch (s[i]) {
-        case '\0': return "'\\0'";
-        case '\a': return "'\\a'";
-        case '\b': return "'\\b'";
-        case '\f': return "'\\f'";
-        case '\n': return "'\\n'";
-        case '\r': return "'\\r'";
-        case '\t': return "'\\t'";
-        case '\v': return "'\\v'";
+        case '\0': return "\\0";
+        case '\a': return "\\a";
+        case '\b': return "\\b";
+        case '\f': return "\\f";
+        case '\n': return "\\n";
+        case '\r': return "\\r";
+        case '\t': return "\\t";
+        case '\v': return "\\v";
         default:
             if (charLen > 4 || charLen == 0 || i + charLen > std::ssize(s) || charLen == 1 && s[i] < 32) {
                 return escapeHex(s[i]);
             } else {
-                return std::format("'{}'", s.substr(i, charLen).asStd());
+                return s.substr(i, charLen).asString();
             }
         }
+    }
+
+    inline std::string escapeStrChar(StringView s, ptrdiff_t i) {
+        if (s.empty()) {
+            return "";
+        }
+
+        if (s[i] == '"' || s[i] == '\\') {
+            return std::format("\\{}", s[i]);
+        }
+
+        return escapeChar(s, i);
     }
 }
 

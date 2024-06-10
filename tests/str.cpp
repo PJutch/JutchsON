@@ -57,3 +57,35 @@ TEST(Str, parseStrHexEscapeQouteNotADigit) {
     EXPECT_EQ(JutchsON::parseStr("\"abcd\\x\""),
         JutchsON::ParseResult<std::string>::makeError(JutchsON::Location{0, 7}, "'\"' is not a hex digit"));
 }
+
+TEST(Str, writeStr) {
+    EXPECT_EQ(JutchsON::writeStr("abcde"), "abcde");
+}
+
+TEST(Str, writeStrEscape) {
+    EXPECT_EQ(JutchsON::writeStr("abc\nde"), "abc\\nde");
+}
+
+TEST(Str, writeStrQuote) {
+    EXPECT_EQ(JutchsON::writeStr("abc de"), "\"abc de\"");
+}
+
+TEST(Str, writeStrQuoteQuotes) {
+    EXPECT_EQ(JutchsON::writeStr("abc\"de"), "\"abc\\\"de\"");
+}
+
+TEST(Str, writeStrQuoteOpeningBracket) {
+    EXPECT_EQ(JutchsON::writeStr("abc[de"), "\"abc[de\"");
+}
+
+TEST(Str, writeStrQuoteClosingBracket) {
+    EXPECT_EQ(JutchsON::writeStr("abc]de"), "\"abc]de\"");
+}
+
+TEST(Str, writeStrQuoteOpeningBrace) {
+    EXPECT_EQ(JutchsON::writeStr("abc{de"), "\"abc{de\"");
+}
+
+TEST(Str, writeStrQuoteClosingBrace) {
+    EXPECT_EQ(JutchsON::writeStr("abc}de"), "\"abc}de\"");
+}

@@ -48,7 +48,7 @@ namespace JutchsON {
                     return ParseResult<T>::makeError(s.location(i), "Number can't contain double '");
                 }
             } else {
-                return ParseResult<T>::makeError(s.location(i), std::format("Number can't contain char {}", escapeChar(s, i)));
+                return ParseResult<T>::makeError(s.location(i), std::format("Number can't contain char '{}'", escapeChar(s, i)));
             }
         }
 

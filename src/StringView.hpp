@@ -193,6 +193,10 @@ namespace JutchsON {
         std::string_view asStd() const {
             return base.substr(offset, len);
         }
+
+        std::string asString() const {
+            return std::string{asStd()};
+        }
     private:
         std::string_view base;
         ptrdiff_t offset;

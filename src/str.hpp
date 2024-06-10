@@ -19,7 +19,7 @@ namespace JutchsON {
         } else if ('a' <= s[i] && s[i] <= 'f') {
             return (s[i] - 'a') + 10;
         } else {
-            return ParseResult<ptrdiff_t>::makeError(s.location(i), std::format("{} is not a hex digit", escapeChar(s, i)));
+            return ParseResult<ptrdiff_t>::makeError(s.location(i), std::format("'{}' is not a hex digit", escapeChar(s, i)));
         }
     }
 
@@ -93,6 +93,34 @@ namespace JutchsON {
                 res.push_back(s[i]);
             }
         }
+        return res;
+    }
+
+    inline bool shouldBeQuouted(StringView s) {
+        for (ptrdiff_t i = 0; i < std::ssize(s); i += getCharLen(s[i])) {
+            if (s[i] == ' ' || s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}' || s[i] == '"') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    inline std::string writeStr(StringView s) {
+        bool quoted = shouldBeQuouted(s);
+
+        std::string res;
+        if (quoted) {
+            res.push_back('"');
+        }
+
+        for (ptrdiff_t i = 0; i < std::ssize(s); i += getCharLen(s[i])) {
+            res.append(escapeStrChar(s, i));
+        }
+
+        if (quoted) {
+            res.push_back('"');
+        }
+
         return res;
     }
 }
