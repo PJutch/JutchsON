@@ -186,6 +186,15 @@ TEST(Num, parseNonnegativeFloatIntDotNoExp) {
 	EXPECT_EQ(JutchsON::parseNonnegativeFloat("123.e"), JutchsON::ParseResult<double>::makeError({0, 5}, "Exponent must follow e"));
 }
 
+TEST(Num, parseNonnegativeFloatNaN) {
+	EXPECT_TRUE(isnan(*JutchsON::parseNonnegativeFloat("nan")));
+}
+
+TEST(Num, parseNonnegativeFloatInf) {
+	double res = *JutchsON::parseNonnegativeFloat("inf");
+	EXPECT_TRUE(isinf(res) && res > 0);
+}
+
 TEST(Num, parseFloat) {
 	EXPECT_EQ(JutchsON::parseFloat("1.23"), 1.23);
 }
@@ -206,13 +215,14 @@ TEST(Num, parseFloatMinusGreaterMinus1) {
 	EXPECT_DOUBLE_EQ(*JutchsON::parseFloat("-0.01"), -0.01);
 }
 
-TEST(Num, parseNonnegativeFloatSignGarbage) {
+TEST(Num, parseFloatSignGarbage) {
 	EXPECT_EQ(JutchsON::parseFloat("+123garbage"), JutchsON::ParseResult<double>::makeError({0, 4}, "Number can't contain char 'g'"));
 }
 
-TEST(Num, parseNonnegativeFloatSignDotGarbage) {
+TEST(Num, parseFloatSignDotGarbage) {
 	EXPECT_EQ(JutchsON::parseFloat("+1.0garbage"), JutchsON::ParseResult<double>::makeError({0, 4}, "Number can't contain char 'g'"));
 }
+
 
 TEST(Num, parseFloatExp) {
 	EXPECT_EQ(JutchsON::parseFloat("1.23e5"), 123'000.0);
@@ -220,6 +230,16 @@ TEST(Num, parseFloatExp) {
 
 TEST(Num, parseFloatMinusExp) {
 	EXPECT_EQ(JutchsON::parseFloat("-1.23e5"), -123'000.0);
+}
+
+TEST(Num, parseFloatSignInf) {
+	double res = *JutchsON::parseFloat("+inf");
+	EXPECT_TRUE(isinf(res) && res > 0);
+}
+
+TEST(Num, parseFloatNegInf) {
+	double res = *JutchsON::parseFloat("-inf");
+	EXPECT_TRUE(isinf(res) && res < 0);
 }
 
 TEST(Num, writeUint) {

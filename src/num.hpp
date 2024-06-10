@@ -8,11 +8,12 @@
 
 #include <algorithm>
 #include <functional>
-#include <cmath>
 #include <format>
 #include <string_view>
 #include <string>
 #include <cctype>
+#include <limits>
+#include <cmath>
 
 namespace JutchsON {
     template <typename T>
@@ -113,6 +114,12 @@ namespace JutchsON {
     template <typename T = double>
     ParseResult<T> parseNonnegativeFloat(StringView s) {
         s = strip(s);
+
+        if (s == "nan" || s == "NaN" || s == "NAN" || s == "Nan") {
+            return std::numeric_limits<T>::quiet_NaN();
+        } else if (s == "inf" || s == "INF" || s == "Inf") {
+            return std::numeric_limits<T>::infinity();
+        }
 
         auto dot = std::ranges::find(s, '.');
         if (dot == s.end()) {
