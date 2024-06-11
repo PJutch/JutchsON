@@ -4,6 +4,7 @@
 #include "ParseResult.hpp"
 #include "object.hpp"
 
+#include <span>
 #include <vector>
 #include <algorithm>
 #include <string_view>
@@ -43,6 +44,49 @@ namespace JutchsON {
             }
             return res;
         });
+    }
+
+    inline std::string writeOnelineList(std::span<const std::string> s, bool quoted = false) {
+        std::string res;
+        if (quoted) {
+            res.push_back('[');
+        }
+
+        for (std::string_view elem : s) {
+            if (!res.empty() && res.back() != '[') {
+                res.push_back(' ');
+            }
+            res.append(elem.data(), std::ssize(elem));
+        }
+
+        if (quoted) {
+            res.push_back(']');
+        }
+        return res;
+    }
+
+    inline std::string writeMultilineList(std::span<const std::string> s) {
+        std::string res;
+        res.push_back('[');
+
+        for (std::string_view elem : s) {
+            res.push_back('\n');
+            res.append(indent(elem));
+        }
+
+        if (res.back() != '[') {
+            res.push_back('\n');
+        }
+        res.push_back(']');
+        return res;
+    }
+
+    inline std::string writeList(std::span<const std::string> s, bool quoted = false) {
+        if (hasMultiline(s)) {
+            return writeMultilineList(s);
+        } else {
+            return writeOnelineList(s, quoted);
+        }
     }
 }
 

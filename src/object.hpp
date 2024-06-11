@@ -127,6 +127,33 @@ namespace JutchsON {
         }
         return false;
     }
+
+    inline std::string indent(std::string_view s) {
+        std::string res;
+
+        auto begin = s.begin();
+        while (true) {
+            auto end = std::ranges::find(begin, s.end(), '\n');
+
+            if (begin != end) {
+                res.append(4, ' ');
+                res.append(begin, end);
+            }
+
+            if (end != s.end()) {
+                res.push_back('\n');
+                begin = std::next(end);
+            } else {
+                return res;
+            }
+        }
+    }
+
+    inline bool hasMultiline(std::span<const std::string> s) {
+        return std::ranges::any_of(s, [](std::string_view s) {
+            return std::ranges::find(s, '\n') != s.end();
+        });
+    }
 }
 
 #endif

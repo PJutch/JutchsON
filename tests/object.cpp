@@ -229,3 +229,34 @@ TEST(Object, isMulitilineBegin) {
 TEST(Object, isMulitilineBothEnds) {
     EXPECT_FALSE(*JutchsON::isMultiline("\nab ce wxyz cd j\n"));
 }
+
+TEST(Object, indent) {
+    EXPECT_EQ(JutchsON::indent("abc\nde"), "    abc\n    de");
+}
+
+TEST(Object, indentSingleton) {
+    EXPECT_EQ(JutchsON::indent("abc"), "    abc");
+}
+
+TEST(Object, indentEmpty) {
+    EXPECT_EQ(JutchsON::indent(""), "");
+}
+
+TEST(Object, indentEmptyLine) {
+    EXPECT_EQ(JutchsON::indent("abc\n\nde"), "    abc\n\n    de");
+}
+
+TEST(Object, hasMultiline) {
+    std::vector<std::string> data{"abc\nde", "j"};
+    EXPECT_TRUE(JutchsON::hasMultiline(data));
+}
+
+TEST(Object, hasMultilineFalse) {
+    std::vector<std::string> data{"abc", "de"};
+    EXPECT_FALSE(JutchsON::hasMultiline(data));
+}
+
+TEST(Object, hasMultilineEmpty) {
+    std::vector<std::string> data{""};
+    EXPECT_FALSE(JutchsON::hasMultiline(data));
+}
