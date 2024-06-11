@@ -46,13 +46,13 @@ namespace JutchsON {
         });
     }
 
-    inline std::string writeOnelineList(std::span<const std::string> s, bool quoted = false) {
+    inline std::string writeOnelineList(std::span<const std::string> l, bool quoted = false) {
         std::string res;
         if (quoted) {
             res.push_back('[');
         }
 
-        for (std::string_view elem : s) {
+        for (std::string_view elem : l) {
             if (!res.empty() && res.back() != '[') {
                 res.push_back(' ');
             }
@@ -65,11 +65,11 @@ namespace JutchsON {
         return res;
     }
 
-    inline std::string writeMultilineList(std::span<const std::string> s) {
+    inline std::string writeMultilineList(std::span<const std::string> l) {
         std::string res;
         res.push_back('[');
 
-        for (std::string_view elem : s) {
+        for (std::string_view elem : l) {
             res.push_back('\n');
             res.append(indent(elem));
         }
@@ -81,11 +81,11 @@ namespace JutchsON {
         return res;
     }
 
-    inline std::string writeList(std::span<const std::string> s, bool quoted = false) {
-        if (hasMultiline(s)) {
-            return writeMultilineList(s);
+    inline std::string writeList(std::span<const std::string> l, bool quoted = false) {
+        if (hasMultiline(l)) {
+            return writeMultilineList(l);
         } else {
-            return writeOnelineList(s, quoted);
+            return writeOnelineList(l, quoted);
         }
     }
 }

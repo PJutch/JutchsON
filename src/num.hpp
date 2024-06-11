@@ -192,15 +192,15 @@ namespace JutchsON {
     }
 
     template <typename T>
-    std::string writeUint(T s) {
-        if (s == 0) {
+    std::string writeUint(T n) {
+        if (n == 0) {
             return "0";
         }
 
         std::string res;
-        while (s > 0) {
-            res.push_back('0' + s % 10);
-            s /= 10;
+        while (n > 0) {
+            res.push_back('0' + n % 10);
+            n /= 10;
         }
 
         std::ranges::reverse(res);
@@ -208,25 +208,25 @@ namespace JutchsON {
     }
 
     template <typename T>
-    std::string writeInt(T s) {
-        if (s < 0) {
-            return '-' + writeUint(-s);
+    std::string writeInt(T n) {
+        if (n < 0) {
+            return '-' + writeUint(-n);
         }
-        return writeUint(s);
+        return writeUint(n);
     }
 
     template <typename T>
-    std::string writeNonnegativeFloat(T s) {
-        if (isnan(s)) {
+    std::string writeNonnegativeFloat(T x) {
+        if (isnan(x)) {
             return "nan";
-        } else if (isinf(s)) {
+        } else if (isinf(x)) {
             return "inf";
         }
 
         std::string res;
 
         T intpart;
-        T fractpart = modf(s, &intpart);
+        T fractpart = modf(x, &intpart);
 
         if (intpart == 0) {
             res.push_back('0');
@@ -262,11 +262,11 @@ namespace JutchsON {
     }
 
     template <typename T>
-    std::string writeFloat(T s) {
-        if (std::signbit(s)) {
-            return '-' + writeNonnegativeFloat(-s);
+    std::string writeFloat(T x) {
+        if (std::signbit(x)) {
+            return '-' + writeNonnegativeFloat(-x);
         }
-        return writeNonnegativeFloat(s);
+        return writeNonnegativeFloat(x);
     }
 }
 

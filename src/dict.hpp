@@ -56,17 +56,17 @@ namespace JutchsON {
         });
     }
 
-    inline std::string writeDict(std::span<const std::pair<std::string, std::string>> s) {
+    inline std::string writeDict(std::span<const std::pair<std::string, std::string>> d) {
         std::string res;
         res.push_back('{');
 
-        for (const std::pair<std::string, std::string>& elem : s) {
+        for (const std::pair<std::string, std::string>& pair : d) {
             res.push_back('\n');
-            res.append(indent(elem.first));
+            res.append(indent(pair.first));
 
-            if (!elem.second.empty()) {
+            if (!pair.second.empty()) {
                 res.push_back(' ');
-                std::string indented = indent(elem.second);
+                std::string indented = indent(pair.second);
                 res.append(strip(std::string_view{indented}).asStd());
             }
         }
