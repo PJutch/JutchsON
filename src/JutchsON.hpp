@@ -2,10 +2,13 @@
 #define JUTCHSON_HPP_
 
 #include "parse/num.hpp"
-#include "write/num.hpp"
+#include "parse/list.hpp"
+#include "parse/dict.hpp"
 
-#include "list.hpp"
-#include "dict.hpp"
+#include "write/num.hpp"
+#include "write/list.hpp"
+#include "write/dict.hpp"
+
 #include "str.hpp"
 #include "bool.hpp"
 
