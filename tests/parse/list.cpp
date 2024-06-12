@@ -55,11 +55,15 @@ TEST(List, parseListEmptyBrackets) {
 }
 
 TEST(List, parseListUnmatchedOpeningBracket) {
-    EXPECT_EQ(JutchsON::parseList("[abc de"), JutchsON::ParseResult<std::vector<JutchsON::StringView>>::makeError({0, 0}, "Unmatched ["));
+    JutchsON::StringView s = "[abc de";
+    EXPECT_EQ(JutchsON::parseList(s), 
+        JutchsON::ParseResult<std::vector<JutchsON::StringView>>::makeError({0, std::ssize(s)}, "Expected ], got eof"));
 }
 
 TEST(List, parseListUnmatchedClosingBracket) {
-    EXPECT_EQ(JutchsON::parseList("abc de]"), JutchsON::ParseResult<std::vector<JutchsON::StringView>>::makeError({0, 6}, "Unmatched ]"));
+    JutchsON::StringView s = "abc de]";
+    EXPECT_EQ(JutchsON::parseList(s), 
+        JutchsON::ParseResult<std::vector<JutchsON::StringView>>::makeError({0, std::ssize(s) - 1}, "Unexpected ]"));
 }
 
 TEST(List, parseListMultiline) {
@@ -84,4 +88,16 @@ TEST(List, parseListMultilineDoubleNewline) {
 
 TEST(List, parseListMultilineEmpty) {
     EXPECT_TRUE(JutchsON::parseList("\n\n\n")->empty());
+}
+
+TEST(Parse, parseList2D) {
+    EXPECT_EQ(JutchsON::parseList("[1 2] [3 4]"), (std::vector<JutchsON::StringView>{"[1 2]", "[3 4]"}));
+}
+
+TEST(Parse, parseListFirst) {
+    EXPECT_EQ(JutchsON::parseList("[1 2] xyz"), (std::vector<JutchsON::StringView>{"[1 2]", "xyz"}));
+}
+
+TEST(Parse, parseListLast) {
+    EXPECT_EQ(JutchsON::parseList("xyz [3 4]"), (std::vector<JutchsON::StringView>{"xyz", "[3 4]"}));
 }

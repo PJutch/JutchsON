@@ -17,15 +17,16 @@ namespace JutchsON {
         }
 
         if (s.front() == '[') {
-            if (s.back() != ']') {
-                return ParseResult<std::vector<StringView>>::makeError(s.location(), "Unmatched [");
+            ParseResult<ptrdiff_t> listEnd = findOnelineObjectEnd(s);
+            if (!listEnd) {
+                return listEnd.errors();
             }
 
-            s.remove_prefix(1);
-            s.remove_suffix(1);
-            s = strip(s);
-        } else if (s.back() == ']') {
-            return ParseResult<std::vector<StringView>>::makeError(s.location(std::ssize(s) - 1), "Unmatched ]");
+            if (listEnd == std::ssize(s)) {
+                s.remove_prefix(1);
+                s.remove_suffix(1);
+                s = strip(s);
+            }
         }
 
         return isMultiline(s).then([&](bool multiline) -> ParseResult<std::vector<StringView>> {
@@ -43,6 +44,55 @@ namespace JutchsON {
             return res;
         });
     }
+
+    inline ParseResult<bool> isMultilineList(StringView s) {
+        s = strip(s);
+
+        if (s.empty()) {
+            return false;
+        }
+
+        if (s.front() == '[') {
+            ParseResult<ptrdiff_t> listEnd = findOnelineObjectEnd(s);
+            if (!listEnd) {
+                return listEnd.errors();
+            }
+
+            if (listEnd == std::ssize(s)) {
+                s.remove_prefix(1);
+                s.remove_suffix(1);
+                s = strip(s);
+            }
+        }
+
+        return isMultiline(s);
+    }
+
+    template <typename T>
+    struct Parser<std::vector<T>> {
+        ParseResult<std::vector<T>> operator() (StringView s, Context) {
+            auto elements = parseList(s);
+            if (!elements) {
+                return elements.errors();
+            }
+
+            auto multiline = isMultilineList(s);
+            if (!multiline) {
+                return multiline.errors();
+            }
+
+            ParseResult<std::vector<T>> res{{}};
+            for (StringView element : *elements) {
+                res = res.combine(parse<T>(element, *multiline ? Context::LINE : Context::OBJECT), 
+                        [](const std::vector<T>& list, const T& element) {
+                    std::vector<T> newList = list;
+                    newList.push_back(element);
+                    return newList;
+                });
+            }
+            return res;
+        }
+    };
 }
 
 #endif

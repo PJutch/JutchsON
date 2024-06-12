@@ -81,7 +81,7 @@ namespace JutchsON {
             }
         }
 
-        const std::vector<ParseError>& errors() {
+        const std::vector<ParseError>& errors() const {
             if (const auto* errors = std::get_if<std::vector<ParseError>>(&data)) {
                 return *errors;
             } else {
@@ -116,6 +116,25 @@ namespace JutchsON {
                 return f(*value);
             } else {
                 return std::get<std::vector<ParseError>>(data);
+            }
+        }
+
+        template <typename U, typename BinaryF>
+        ParseResult<std::invoke_result_t<BinaryF, T, U>> combine(const ParseResult<U>& other, BinaryF&& f) const {
+            if (*this && other) {
+                return f(**this, *other);
+            } else if (*this) {
+                return other.errors();
+            } else if (other) {
+                return errors();
+            } else {
+                std::vector<ParseError> combinedErrors;
+                combinedErrors.reserve(std::ssize(errors()) + std::ssize(other.errors()));
+
+                std::ranges::copy(errors(), std::back_inserter(combinedErrors));
+                std::ranges::copy(other.errors(), std::back_inserter(combinedErrors));
+
+                return combinedErrors;
             }
         }
 

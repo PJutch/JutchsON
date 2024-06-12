@@ -30,3 +30,28 @@ TEST(Parse, parseBoolEmpty) {
 TEST(Parse, parseBoolEmptyAllowed) {
 	EXPECT_TRUE(*JutchsON::parse<bool>("", JutchsON::Context::LINE_REST));
 }
+
+TEST(Parse, parseVectorInt) {
+	EXPECT_EQ(JutchsON::parse<std::vector<int>>("1 2 3"), (std::vector{1, 2, 3}));
+}
+
+TEST(Parse, parseVectorErrorCollection) {
+	EXPECT_EQ(JutchsON::parse<std::vector<int>>("g 2 h"), (JutchsON::ParseResult<std::vector<int>>{std::vector<JutchsON::ParseError>{
+		{{0, 0}, "Number can't contain char 'g'"}, {{0, 4}, "Number can't contain char 'h'"}
+	}}));
+}
+
+TEST(Parse, parseVectorString) {
+	EXPECT_EQ(JutchsON::parse<std::vector<std::string>>("abc de"), (std::vector<std::string>{"abc", "de"}));
+}
+
+TEST(Parse, parseVectorVectorInt) {
+	EXPECT_EQ(JutchsON::parse<std::vector<std::vector<int>>>("[1 2] [3 4]"), (std::vector<std::vector<int>>{{1, 2}, {3, 4}}));
+}
+
+TEST(Parse, parseVectorVectorErrorCollection) {
+	using ParsedT = std::vector<std::vector<int>>;
+	EXPECT_EQ(JutchsON::parse<ParsedT>("[g 2] [h 4]"), (JutchsON::ParseResult<ParsedT>{std::vector<JutchsON::ParseError>{
+		{{0, 1}, "Number can't contain char 'g'"}, {{0, 7}, "Number can't contain char 'h'"}
+	}}));
+}

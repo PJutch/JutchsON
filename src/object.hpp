@@ -57,9 +57,11 @@ namespace JutchsON {
             } else {
                 return ParseResult<ptrdiff_t>::makeError(s.location(std::ssize(s)), "Expected escape sequence, got eof after \\");
             }
+        } else if (s.front() == ']' || s.front() == '}') {
+            return ParseResult<ptrdiff_t>::makeError(s.location(), std::format("Unexpected {}", s.front()));
         } else {
             return std::ranges::find_if(s, [](char c) {
-                return isspace(c) || c == '[' || c == '{' || c == '"';
+                return isspace(c) || c == '[' || c == '{' || c == '"' || c == ']' || c == '{';
             }) - s.begin();
         }
     }
