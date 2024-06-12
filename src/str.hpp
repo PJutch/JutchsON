@@ -105,11 +105,11 @@ namespace JutchsON {
         return false;
     }
 
-    inline std::string writeStr(StringView s) {
-        bool quoted = shouldBeQuouted(s);
+    inline std::string writeStr(StringView s, bool quoted = true) {
+        bool actuallyQuoted = quoted && shouldBeQuouted(s);
 
         std::string res;
-        if (quoted) {
+        if (actuallyQuoted) {
             res.push_back('"');
         }
 
@@ -117,7 +117,7 @@ namespace JutchsON {
             res.append(escapeStrChar(s, i));
         }
 
-        if (quoted) {
+        if (actuallyQuoted) {
             res.push_back('"');
         }
 
