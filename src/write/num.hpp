@@ -1,6 +1,8 @@
 #ifndef JUTCHSON_WRITE_NUM_HPP_
 #define JUTCHSON_WRITE_NUM_HPP_
 
+#include "write/list.hpp"
+
 #include <algorithm>
 #include <string>
 #include <cmath>
@@ -83,6 +85,15 @@ namespace JutchsON {
         }
         return writeNonnegativeFloat(x);
     }
+
+
+    template <typename T>
+    concept Number = std::numeric_limits<T>::is_specialized;
+
+    template <Number T>
+    struct forcesMultilineImpl<T> {
+        static inline constexpr bool value = false;
+    };
 }
 
 #endif

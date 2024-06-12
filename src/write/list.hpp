@@ -50,6 +50,13 @@ namespace JutchsON {
             return writeOnelineList(l, quoted);
         }
     }
+
+
+    template <typename T>
+    struct forcesMultilineImpl;
+
+    template <typename T>
+    inline constexpr bool forcesMultiline = forcesMultilineImpl<T>::value;
 }
 
 #endif
