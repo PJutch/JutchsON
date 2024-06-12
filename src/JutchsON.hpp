@@ -1,7 +1,9 @@
 #ifndef JUTCHSON_HPP_
 #define JUTCHSON_HPP_
 
-#include "num.hpp"
+#include "parse/num.hpp"
+#include "write/num.hpp"
+
 #include "list.hpp"
 #include "dict.hpp"
 #include "str.hpp"
