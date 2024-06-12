@@ -187,6 +187,38 @@ namespace JutchsON {
             return parseNonnegativeFloat<T>(s);
         }
     }
+
+    template <typename T>
+    concept UnsignedInteger = std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
+
+    template <UnsignedInteger T>
+    ParseResult<T> parse(StringView s) {
+        return parseUint<T>(s);
+    }
+
+    template <typename T>
+    concept SignedInteger = std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed;
+
+    template <SignedInteger T>
+    ParseResult<T> parse(StringView s) {
+        return parseInt<T>(s);
+    }
+
+    template <typename T>
+    concept UnsignedFloat = !std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
+
+    template <UnsignedFloat T>
+    ParseResult<T> parse(StringView s) {
+        return parseNonnegativeFloat<T>(s);
+    }
+
+    template <typename T>
+    concept SignedFloat = !std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed;
+
+    template <SignedFloat T>
+    ParseResult<T> parse(StringView s) {
+        return parseFloat<T>(s);
+    }
 }
 
 #endif

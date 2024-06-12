@@ -241,3 +241,15 @@ TEST(Num, parseFloatNegInf) {
 	double res = *JutchsON::parseFloat("-inf");
 	EXPECT_TRUE(isinf(res) && res < 0);
 }
+
+TEST(Num, parseGenericUnsignedInt) {
+	EXPECT_EQ(JutchsON::parse<unsigned int>("123"), 123u);
+}
+
+TEST(Num, parseGenericInt) {
+	EXPECT_EQ(JutchsON::parse<int>("-123"), -123);
+}
+
+TEST(Num, parseGenericFloat) {
+	EXPECT_DOUBLE_EQ(*JutchsON::parse<double>("1.23"), 1.23);
+}
