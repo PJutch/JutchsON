@@ -17,3 +17,16 @@ TEST(Parse, parseFloat) {
 TEST(Parse, parseString) {
 	EXPECT_EQ(JutchsON::parse<std::string>("abc de"), "abc de");
 }
+
+TEST(Parse, parseBool) {
+	EXPECT_TRUE(*JutchsON::parse<bool>("true"));
+}
+
+TEST(Parse, parseBoolEmpty) {
+	EXPECT_EQ(JutchsON::parse<bool>("", JutchsON::Context::LINE), 
+		JutchsON::ParseResult<bool>::makeError({0, 0}, "Empty bool isn't allowed"));
+}
+
+TEST(Parse, parseBoolEmptyAllowed) {
+	EXPECT_TRUE(*JutchsON::parse<bool>("", JutchsON::Context::LINE_REST));
+}

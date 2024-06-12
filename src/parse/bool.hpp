@@ -23,6 +23,13 @@ namespace JutchsON {
             return ParseResult<bool>::makeError(s.location(), std::format("\"{}\" is invalid bool value", s.asStd()));
         }
     }
+
+    template <>
+    struct Parser<bool> {
+        ParseResult<bool> operator() (StringView s, Context context) {
+            return parseBool(s, context == Context::LINE_REST);
+        }
+    };
 }
 
 #endif
