@@ -118,6 +118,24 @@ namespace JutchsON {
         }
     };
 
+    template <typename Key, typename Value>
+    struct Parser<std::unordered_map<Key, Value>> {
+        ParseResult<std::unordered_map<Key, Value>> operator() (StringView s, Context context) {
+            auto multimap = parse<std::unordered_multimap<Key, Value>>(s, context);
+            if (!multimap) {
+                return multimap.errors();
+            }
+
+            std::unordered_map<Key, Value> res;
+            std::vector<ParseError> errors;
+            for (const auto& [key, value] : *multimap) {
+                if (!res.try_emplace(key, value).second) {
+                    errors.emplace_back(s.location(), "Duplicated key detected");
+                }
+            }
+            return errors.empty() ? res : ParseResult<std::unordered_map<Key, Value>>{errors};
+        } 
+    };
 }
 
 #endif

@@ -90,3 +90,12 @@ TEST(Parse, parseUnorderedMulimapIntNested) {
 	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, std::unordered_multimap<int, int>>>("1 {1 2\n 3 4}\n2 {5 6\n 7 8}")),
 		(std::unordered_multimap<int, std::unordered_multimap<int, int>>{{1, {{1, 2}, {3, 4}}}, {2, {{5, 6}, {7, 8}}}}));
 }
+
+TEST(Parse, parseUnorderedMapInt) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_map<int, int>>("1 2\n3 4")), (std::unordered_map<int, int>{{1, 2}, {3, 4}}));
+}
+
+TEST(Parse, parseUnorderedMapIntDuplicated) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_map<int, int>>("1 2\n1 4")), 
+		(JutchsON::ParseResult<std::unordered_map<int, int>>::makeError({0, 0}, "Duplicated key detected")));
+}
