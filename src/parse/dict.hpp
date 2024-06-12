@@ -4,9 +4,9 @@
 #include "ParseResult.hpp"
 #include "StringView.hpp"
 #include "object.hpp"
+#include "strip.hpp"
 
 #include <vector>
-#include <algorithm>
 #include <utility>
 
 namespace JutchsON {

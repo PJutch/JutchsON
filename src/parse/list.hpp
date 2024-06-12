@@ -2,13 +2,11 @@
 #define JUTCHSON_PARSE_LIST_HPP_
 
 #include "ParseResult.hpp"
+#include "StringView.hpp"
 #include "object.hpp"
+#include "strip.hpp"
 
-#include <span>
 #include <vector>
-#include <algorithm>
-#include <string_view>
-#include <cctype>
 
 namespace JutchsON {
     inline ParseResult<std::vector<StringView>> parseList(StringView s) {

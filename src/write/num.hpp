@@ -3,8 +3,6 @@
 
 #include <algorithm>
 #include <string>
-#include <cctype>
-#include <limits>
 #include <cmath>
 
 namespace JutchsON {

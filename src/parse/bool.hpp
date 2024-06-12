@@ -3,10 +3,9 @@
 
 #include "ParseResult.hpp"
 #include "StringView.hpp"
+#include "strip.hpp"
 
 #include <format>
-#include <string>
-#include <algorithm>
 
 namespace JutchsON {
     inline ParseResult<bool> parseBool(StringView s, bool allowEmpty = false) {

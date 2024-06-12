@@ -3,7 +3,6 @@
 
 #include "ParseResult.hpp"
 #include "StringView.hpp"
-#include "object.hpp"
 #include "escape.hpp"
 
 #include <format>

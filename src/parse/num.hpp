@@ -6,10 +6,10 @@
 #include "escape.hpp"
 #include "strip.hpp"
 
+#include <limits>
 #include <algorithm>
 #include <functional>
 #include <format>
-#include <string_view>
 #include <cctype>
 
 namespace JutchsON {

@@ -1,14 +1,11 @@
 #ifndef JUTCHSON_WRITE_LIST_HPP_
 #define JUTCHSON_WRITE_LIST_HPP_
 
-#include "ParseResult.hpp"
 #include "object.hpp"
 
 #include <span>
-#include <vector>
 #include <algorithm>
 #include <string_view>
-#include <cctype>
 
 namespace JutchsON {
     inline std::string writeOnelineList(std::span<const std::string> l, bool quoted = false) {
