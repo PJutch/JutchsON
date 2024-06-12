@@ -70,7 +70,13 @@ namespace JutchsON {
 
     template <typename T>
     struct Parser<std::vector<T>> {
-        ParseResult<std::vector<T>> operator() (StringView s, Context) {
+        ParseResult<std::vector<T>> operator() (StringView s, Context context) {
+            if (context == Context::OBJECT) {
+                if (auto stripped = strip(s); stripped.empty() || stripped.front() != '[') {
+                    return ParseResult<std::vector<T>>::makeError(stripped.location(), "Expected a nested list");
+                }
+            }
+
             auto elements = parseList(s);
             if (!elements) {
                 return elements.errors();

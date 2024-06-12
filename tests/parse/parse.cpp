@@ -55,3 +55,10 @@ TEST(Parse, parseVectorVectorErrorCollection) {
 		{{0, 1}, "Number can't contain char 'g'"}, {{0, 7}, "Number can't contain char 'h'"}
 	}}));
 }
+
+TEST(Parse, parseVectorVectorNotAList) {
+	using ParsedT = std::vector<std::vector<int>>;
+	EXPECT_EQ(JutchsON::parse<ParsedT>("garbage [3 4]", JutchsON::Context::OBJECT),
+		JutchsON::ParseResult<ParsedT>::makeError({0, 0}, "Expected a nested list")
+	);
+}
