@@ -37,19 +37,3 @@ TEST(Bool, parseBoolEmptyAllowed) {
 TEST(Bool, parseBoolInvalid) {
     EXPECT_EQ(JutchsON::parseBool("invalid"), JutchsON::ParseResult<bool>::makeError({0, 0}, "\"invalid\" is invalid bool value"));
 }
-
-TEST(Bool, writeBoolTrue) {
-    EXPECT_EQ(JutchsON::writeBool(true), "true");
-}
-
-TEST(Bool, writeBoolFalse) {
-    EXPECT_EQ(JutchsON::writeBool(false), "false");
-}
-
-TEST(Bool, writeBoolEmpty) {
-    EXPECT_EQ(JutchsON::writeBool(true, true), "");
-}
-
-TEST(Bool, writeBoolFalseAllowEmpty) {
-    EXPECT_EQ(JutchsON::writeBool(false, true), "false");
-}

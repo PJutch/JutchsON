@@ -1,5 +1,5 @@
-#ifndef JUTCHSON_BOOL_HPP_
-#define JUTCHSON_BOOL_HPP_
+#ifndef JUTCHSON_PARSE_BOOL_HPP_
+#define JUTCHSON_PARSE_BOOL_HPP_
 
 #include "ParseResult.hpp"
 #include "StringView.hpp"
@@ -22,14 +22,6 @@ namespace JutchsON {
             return false;
         } else {
             return ParseResult<bool>::makeError(s.location(), std::format("\"{}\" is invalid bool value", s.asStd()));
-        }
-    }
-
-    inline std::string writeBool(bool s, bool allowEmpty = false) {
-        if (s) {
-            return allowEmpty ? "" : "true";
-        } else {
-            return "false";
         }
     }
 }

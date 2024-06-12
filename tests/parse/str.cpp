@@ -23,7 +23,7 @@ TEST(Str, parseStrEscapeSeq) {
 }
 
 TEST(Str, parseStrTruncatedEscapeSeq) {
-    EXPECT_EQ(JutchsON::parseStr("abcdef\\"), 
+    EXPECT_EQ(JutchsON::parseStr("abcdef\\"),
         JutchsON::ParseResult<std::string>::makeError(JutchsON::Location{0, 7}, "Truncated escape sequence"));
 }
 
@@ -44,7 +44,7 @@ TEST(Str, parseStrHexEscape) {
 }
 
 TEST(Str, parseStrHexEscapeTruncated) {
-    EXPECT_EQ(JutchsON::parseStr("abcd\\x"), 
+    EXPECT_EQ(JutchsON::parseStr("abcd\\x"),
         JutchsON::ParseResult<std::string>::makeError(JutchsON::Location{0, 6}, "Truncated \\x escape sequence"));
 }
 
@@ -60,40 +60,4 @@ TEST(Str, parseStrHexEscapeQouteNotADigit) {
 
 TEST(Str, parseStrSpaces) {
     EXPECT_EQ(JutchsON::parseStr("abc de"), "abc de");
-}
-
-TEST(Str, writeStr) {
-    EXPECT_EQ(JutchsON::writeStr("abcde"), "abcde");
-}
-
-TEST(Str, writeStrEscape) {
-    EXPECT_EQ(JutchsON::writeStr("abc\nde"), "abc\\nde");
-}
-
-TEST(Str, writeStrQuote) {
-    EXPECT_EQ(JutchsON::writeStr("abc de"), "\"abc de\"");
-}
-
-TEST(Str, writeStrQuoteQuotes) {
-    EXPECT_EQ(JutchsON::writeStr("abc\"de"), "\"abc\\\"de\"");
-}
-
-TEST(Str, writeStrQuoteOpeningBracket) {
-    EXPECT_EQ(JutchsON::writeStr("abc[de"), "\"abc[de\"");
-}
-
-TEST(Str, writeStrQuoteClosingBracket) {
-    EXPECT_EQ(JutchsON::writeStr("abc]de"), "\"abc]de\"");
-}
-
-TEST(Str, writeStrQuoteOpeningBrace) {
-    EXPECT_EQ(JutchsON::writeStr("abc{de"), "\"abc{de\"");
-}
-
-TEST(Str, writeStrQuoteClosingBrace) {
-    EXPECT_EQ(JutchsON::writeStr("abc}de"), "\"abc}de\"");
-}
-
-TEST(Str, writeStrUnquoted) {
-    EXPECT_EQ(JutchsON::writeStr("abc de", false), "abc de");
 }

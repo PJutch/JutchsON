@@ -4,13 +4,14 @@
 #include "parse/num.hpp"
 #include "parse/list.hpp"
 #include "parse/dict.hpp"
+#include "parse/bool.hpp"
+#include "parse/str.hpp"
 
 #include "write/num.hpp"
 #include "write/list.hpp"
 #include "write/dict.hpp"
-
-#include "str.hpp"
-#include "bool.hpp"
+#include "write/bool.hpp"
+#include "write/str.hpp"
 
 #include "Location.hpp"
 #include "ParseResult.hpp"

@@ -1,5 +1,5 @@
-#ifndef JUTCHSON_STR_HPP_
-#define JUTCHSON_STR_HPP_
+#ifndef JUTCHSON_PARSE_STR_HPP_
+#define JUTCHSON_PARSE_STR_HPP_
 
 #include "ParseResult.hpp"
 #include "StringView.hpp"
@@ -66,7 +66,7 @@ namespace JutchsON {
                 case 'v': res.push_back('\v'); break;
                 case '\\': res.push_back('\\'); break;
                 case '"': res.push_back('"'); break;
-                case 'x': 
+                case 'x':
                     if (i + 3 >= std::ssize(s)) {
                         if (quoted) {
                             return ParseResult<std::string>::makeError(s.location(std::ssize(s)), "'\"' is not a hex digit");
@@ -93,34 +93,6 @@ namespace JutchsON {
                 res.push_back(s[i]);
             }
         }
-        return res;
-    }
-
-    inline bool shouldBeQuouted(StringView s) {
-        for (ptrdiff_t i = 0; i < std::ssize(s); i += getCharLen(s[i])) {
-            if (s[i] == ' ' || s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}' || s[i] == '"') {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    inline std::string writeStr(StringView s, bool quoted = true) {
-        bool actuallyQuoted = quoted && shouldBeQuouted(s);
-
-        std::string res;
-        if (actuallyQuoted) {
-            res.push_back('"');
-        }
-
-        for (ptrdiff_t i = 0; i < std::ssize(s); i += getCharLen(s[i])) {
-            res.append(escapeStrChar(s, i));
-        }
-
-        if (actuallyQuoted) {
-            res.push_back('"');
-        }
-
         return res;
     }
 }
