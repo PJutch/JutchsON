@@ -48,3 +48,8 @@ TEST(Dict, parseDictMultilineBraces) {
     std::vector<std::pair<JutchsON::StringView, JutchsON::StringView>> result{{"abc", "def xyz"}, {"gh", "ij"}};
     EXPECT_EQ(JutchsON::parseDict("{abc def xyz\ngh ij}"), result);
 }
+
+TEST(Parse, parseDictLast) {
+    EXPECT_EQ(JutchsON::parseDict("xyz {3 4}"), 
+        (std::vector<std::pair<JutchsON::StringView, JutchsON::StringView>>{{"xyz", "{3 4}"}}));
+}

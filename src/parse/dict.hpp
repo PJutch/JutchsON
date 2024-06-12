@@ -6,6 +6,7 @@
 #include "object.hpp"
 #include "strip.hpp"
 
+#include <unordered_map>
 #include <vector>
 #include <utility>
 
@@ -18,15 +19,16 @@ namespace JutchsON {
         }
 
         if (s.front() == '{') {
-            if (s.back() != '}') {
-                return ParseResult<std::vector<std::pair<StringView, StringView>>>::makeError(s.location(), "Unmatched {");
+            ParseResult<ptrdiff_t> dictEnd = findOnelineObjectEnd(s);
+            if (!dictEnd) {
+                return dictEnd.errors();
             }
 
-            s.remove_prefix(1);
-            s.remove_suffix(1);
-            s = strip(s);
-        } else if (s.back() == '}') {
-            return ParseResult<std::vector<std::pair<StringView, StringView>>>::makeError(s.location(std::ssize(s) - 1), "Unmatched }");
+            if (dictEnd == std::ssize(s)) {
+                s.remove_prefix(1);
+                s.remove_suffix(1);
+                s = strip(s);
+            }
         }
 
         std::vector<std::pair<StringView, StringView>> res;
@@ -55,6 +57,67 @@ namespace JutchsON {
             return res;
         });
     }
+
+    inline ParseResult<bool> isMultilineDict(StringView s) {
+        s = strip(s);
+
+        if (s.empty()) {
+            return false;
+        }
+
+        if (s.front() == '{') {
+            ParseResult<ptrdiff_t> dictEnd = findOnelineObjectEnd(s);
+            if (!dictEnd) {
+                return dictEnd.errors();
+            }
+
+            if (dictEnd == std::ssize(s)) {
+                s.remove_prefix(1);
+                s.remove_suffix(1);
+                s = strip(s);
+            }
+        }
+
+        return isMultiline(s);
+    }
+
+    template <typename Key, typename Value>
+    struct Parser<std::unordered_multimap<Key, Value>> {
+        ParseResult<std::unordered_multimap<Key, Value>> operator() (StringView s, Context context) {
+            if (context == Context::OBJECT) {
+                if (auto stripped = strip(s); stripped.empty() || stripped.front() != '{') {
+                    return ParseResult<std::unordered_multimap<Key, Value>>::makeError(stripped.location(), "Expected a nested dict");
+                }
+            }
+
+            auto pairs = parseDict(s);
+            if (!pairs) {
+                return pairs.errors();
+            }
+
+            auto multiline = isMultilineDict(s);
+            if (!multiline) {
+                return multiline.errors();
+            }
+
+            ParseResult<std::unordered_multimap<Key, Value>> res{{}};
+            for (auto [key, value] : *pairs) {
+                auto pair = parse<Key>(key, Context::OBJECT)
+                        .combine(parse<Value>(value, *multiline ? Context::LINE_REST : Context::OBJECT), 
+                            [](const Key& key, const Value& value) {
+                    return std::pair{key, value};
+                });
+
+                res = res.combine(pair, [](const std::unordered_multimap<Key, Value>& map, const std::pair<Key, Value>& pair) {
+                    std::unordered_multimap<Key, Value> newMap = map;
+                    newMap.insert(pair);
+                    return newMap;
+                });
+            }
+            return res;
+        }
+    };
+
 }
 
 #endif

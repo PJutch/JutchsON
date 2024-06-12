@@ -62,3 +62,31 @@ TEST(Parse, parseVectorVectorNotAList) {
 		JutchsON::ParseResult<ParsedT>::makeError({0, 0}, "Expected a nested list")
 	);
 }
+
+TEST(Parse, parseUnorderedMulimapInt) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, int>>("1 2\n3 4")), (std::unordered_multimap<int, int>{{1, 2}, {3, 4}}));
+}
+
+TEST(Parse, parseUnorderedMulimapIntOneline) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, int>>("1 2 3 4")), (std::unordered_multimap<int, int>{{1, 2}, {3, 4}}));
+}
+
+TEST(Parse, parseUnorderedMulimapString) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<std::string, std::string>>("abc de\nj xyz")), 
+		(std::unordered_multimap<std::string, std::string>{{"abc", "de"}, {"j", "xyz"}}));
+}
+
+TEST(Parse, parseUnorderedMulimapIntStringLineRest) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, std::string>>("1 ab c\n2 de")), 
+		(std::unordered_multimap<int, std::string>{{1, "ab c"}, {2, "de"}}));
+}
+
+TEST(Parse, parseUnorderedMulimapIntBool) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, bool>>("1\n2 false\n3 true")),
+		(std::unordered_multimap<int, bool>{{1, true}, {2, false}, {3, true}}));
+}
+
+TEST(Parse, parseUnorderedMulimapIntNested) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, std::unordered_multimap<int, int>>>("1 {1 2\n 3 4}\n2 {5 6\n 7 8}")),
+		(std::unordered_multimap<int, std::unordered_multimap<int, int>>{{1, {{1, 2}, {3, 4}}}, {2, {{5, 6}, {7, 8}}}}));
+}
