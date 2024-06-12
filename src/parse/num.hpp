@@ -3,6 +3,7 @@
 
 #include "StringView.hpp"
 #include "ParseResult.hpp"
+#include "Context.hpp"
 #include "escape.hpp"
 #include "strip.hpp"
 
@@ -192,7 +193,7 @@ namespace JutchsON {
     concept UnsignedInteger = std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
 
     template <UnsignedInteger T>
-    ParseResult<T> parse(StringView s) {
+    ParseResult<T> parse(StringView s, Context = Context::LINE) {
         return parseUint<T>(s);
     }
 
@@ -200,7 +201,7 @@ namespace JutchsON {
     concept SignedInteger = std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed;
 
     template <SignedInteger T>
-    ParseResult<T> parse(StringView s) {
+    ParseResult<T> parse(StringView s, Context = Context::LINE) {
         return parseInt<T>(s);
     }
 
@@ -208,7 +209,7 @@ namespace JutchsON {
     concept UnsignedFloat = !std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
 
     template <UnsignedFloat T>
-    ParseResult<T> parse(StringView s) {
+    ParseResult<T> parse(StringView s, Context = Context::LINE) {
         return parseNonnegativeFloat<T>(s);
     }
 
@@ -216,7 +217,7 @@ namespace JutchsON {
     concept SignedFloat = !std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed;
 
     template <SignedFloat T>
-    ParseResult<T> parse(StringView s) {
+    ParseResult<T> parse(StringView s, Context = Context::LINE) {
         return parseFloat<T>(s);
     }
 }
