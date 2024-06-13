@@ -212,7 +212,8 @@ namespace JutchsON {
     };
 
     template <typename T>
-    concept UnsignedFloat = !std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
+    concept UnsignedFloat = std::numeric_limits<T>::is_specialized 
+        && !std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
 
     template <UnsignedFloat T>
     struct Parser<T> {
