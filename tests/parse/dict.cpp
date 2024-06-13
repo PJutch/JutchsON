@@ -49,7 +49,88 @@ TEST(Dict, parseDictMultilineBraces) {
     EXPECT_EQ(JutchsON::parseDict("{abc def xyz\ngh ij}"), result);
 }
 
-TEST(Parse, parseDictLast) {
+TEST(Dict, parseDictLast) {
     EXPECT_EQ(JutchsON::parseDict("xyz {3 4}"), 
         (std::vector<std::pair<JutchsON::StringView, JutchsON::StringView>>{{"xyz", "{3 4}"}}));
+}
+
+TEST(Dict, parseUnorderedMulimapInt) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, int>>("1 2\n3 4")), (std::unordered_multimap<int, int>{{1, 2}, {3, 4}}));
+}
+
+TEST(Dict, parseUnorderedMulimapIntOneline) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, int>>("1 2 3 4")), (std::unordered_multimap<int, int>{{1, 2}, {3, 4}}));
+}
+
+TEST(Dict, parseUnorderedMulimapString) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<std::string, std::string>>("abc de\nj xyz")),
+		(std::unordered_multimap<std::string, std::string>{{"abc", "de"}, {"j", "xyz"}}));
+}
+
+TEST(Dict, parseUnorderedMulimapIntStringLineRest) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, std::string>>("1 ab c\n2 de")),
+		(std::unordered_multimap<int, std::string>{{1, "ab c"}, {2, "de"}}));
+}
+
+TEST(Dict, parseUnorderedMulimapIntBool) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, bool>>("1\n2 false\n3 true")),
+		(std::unordered_multimap<int, bool>{{1, true}, {2, false}, {3, true}}));
+}
+
+TEST(Dict, parseUnorderedMulimapIntNested) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_multimap<int, std::unordered_multimap<int, int>>>("1 {1 2\n 3 4}\n2 {5 6\n 7 8}")),
+		(std::unordered_multimap<int, std::unordered_multimap<int, int>>{{1, {{1, 2}, {3, 4}}}, {2, {{5, 6}, {7, 8}}}}));
+}
+
+TEST(Dict, parseUnorderedMapInt) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_map<int, int>>("1 2\n3 4")), (std::unordered_map<int, int>{{1, 2}, {3, 4}}));
+}
+
+TEST(Dict, parseUnorderedMapIntDuplicated) {
+	EXPECT_EQ((JutchsON::parse<std::unordered_map<int, int>>("1 2\n1 4")),
+		(JutchsON::ParseResult<std::unordered_map<int, int>>::makeError({0, 0}, "Duplicated key detected")));
+}
+
+namespace {
+	struct TestStruct {
+		int ab;
+		int c = 1;
+		int de;
+
+		friend bool operator == (TestStruct, TestStruct) = default;
+
+		friend std::ostream& operator << (std::ostream& os, TestStruct value) {
+			return os << "ab " << value.ab << "c " << value.c << "de " << value.de;
+		}
+	};
+
+	BOOST_DESCRIBE_STRUCT(TestStruct, (), (ab, c, de));
+
+	struct EmptyTestStruct {};
+
+	BOOST_DESCRIBE_STRUCT(EmptyTestStruct, (), ());
+}
+
+TEST(Dict, parseStruct) {
+	EXPECT_EQ(JutchsON::parse<TestStruct>("ab 1\nc 2\nde 3"), (TestStruct{1, 2, 3}));
+}
+
+TEST(Dict, parseStructDefaults) {
+	EXPECT_EQ(JutchsON::parse<TestStruct>(""), (TestStruct{0, 1, 0}));
+}
+
+TEST(Dict, parseStructSomeDefaults) {
+	EXPECT_EQ(JutchsON::parse<TestStruct>("ab 1"), (TestStruct{1, 1, 0}));
+}
+
+TEST(Dict, parseStructErrors) {
+	JutchsON::ParseResult<TestStruct> result{std::vector<JutchsON::ParseError>{
+		{{1, 2}, "'G' is not a hex digit"}, {{3, 0}, "Duplicated field de"}, {{4, 0}, "Unknown field unknown"}
+	}};
+
+	EXPECT_EQ(JutchsON::parse<TestStruct>("ab 1\n\\xGG 2\nde 3\nde 3\nunknown 4"), result);
+}
+
+TEST(Dict, parseStructEmpty) {
+	EXPECT_TRUE(JutchsON::parse<EmptyTestStruct>(""));
 }

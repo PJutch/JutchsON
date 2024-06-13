@@ -61,3 +61,7 @@ TEST(Str, parseStrHexEscapeQouteNotADigit) {
 TEST(Str, parseStrSpaces) {
     EXPECT_EQ(JutchsON::parseStr("abc de"), "abc de");
 }
+
+TEST(Str, parseGenericString) {
+    EXPECT_EQ(JutchsON::parse<std::string>("abc de"), "abc de");
+}
