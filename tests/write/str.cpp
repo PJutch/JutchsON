@@ -37,3 +37,15 @@ TEST(Str, writeStrQuoteClosingBrace) {
 TEST(Str, writeStrUnquoted) {
     EXPECT_EQ(JutchsON::writeStr("abc de", false), "abc de");
 }
+
+TEST(Str, writeGenericString) {
+    EXPECT_EQ(JutchsON::write(std::string{"abcde"}), "abcde");
+}
+
+TEST(Str, writeGenericStringView) {
+    EXPECT_EQ(JutchsON::write(std::string_view{"abcde"}), "abcde");
+}
+
+TEST(Str, writeGenericStringCharPtr) {
+    EXPECT_EQ(JutchsON::write("abcde"), "abcde");
+}

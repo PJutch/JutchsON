@@ -3,6 +3,7 @@
 
 #include "escape.hpp"
 
+#include <string_view>
 #include <string>
 
 namespace JutchsON {
@@ -33,6 +34,41 @@ namespace JutchsON {
 
         return res;
     }
+
+    template <>
+    struct Writer<std::string> {
+        std::string operator() (const std::string& s, Context context) {
+            return writeStr(std::string_view{s}, context == Context::OBJECT);
+        }
+    };
+
+    template <>
+    struct Writer<std::string_view> {
+        std::string operator() (std::string_view s, Context context) {
+            return writeStr(s, context == Context::OBJECT);
+        }
+    };
+
+    template <>
+    struct Writer<const char*> {
+        std::string operator() (const char* s, Context context) {
+            return writeStr(std::string_view{s}, context == Context::OBJECT);
+        }
+    };
+
+    template <>
+    struct Writer<char*> {
+        std::string operator() (char* s, Context context) {
+            return writeStr(std::string_view{s}, context == Context::OBJECT);
+        }
+    };
+
+    template <>
+    struct Writer<StringView> {
+        std::string operator() (StringView s, Context context) {
+            return writeStr(s, context == Context::OBJECT);
+        }
+    };
 }
 
 #endif
