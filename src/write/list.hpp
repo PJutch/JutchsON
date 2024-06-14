@@ -43,20 +43,33 @@ namespace JutchsON {
         return res;
     }
 
-    inline std::string writeList(std::span<const std::string> l, bool quoted = false) {
-        if (hasMultiline(l)) {
-            return writeMultilineList(l);
-        } else {
-            return writeOnelineList(l, quoted);
-        }
-    }
-
-
     template <typename T>
-    struct forcesMultilineImpl;
+    struct forcesMultilineImpl {
+        static inline constexpr bool value = true;
+    };
 
     template <typename T>
     inline constexpr bool forcesMultiline = forcesMultilineImpl<T>::value;
+
+    template <std::ranges::sized_range Range>
+    bool shouldBeMultiline(Range range) {
+        return forcesMultiline<std::ranges::range_value_t<Range>> || std::ssize(range) > 40;
+    }
+
+    template <std::ranges::sized_range Range> requires std::ranges::random_access_range<Range>
+    bool shouldBeMultiline(Range range) {
+        return forcesMultiline<std::ranges::range_value_t<Range>> || std::ssize(range) > 40;
+    }
+
+    template <std::ranges::random_access_range Range>
+    bool shouldBeMultiline(Range range) {
+        return forcesMultiline<std::ranges::range_value_t<Range>> || range.end() - range.begin() > 40;
+    }
+
+    template <std::ranges::range Range>
+    bool shouldBeMultiline(Range range) {
+        return true;
+    }
 }
 
 #endif

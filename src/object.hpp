@@ -150,12 +150,6 @@ namespace JutchsON {
             }
         }
     }
-
-    inline bool hasMultiline(std::span<const std::string> s) {
-        return std::ranges::any_of(s, [](std::string_view s) {
-            return std::ranges::find(s, '\n') != s.end();
-        });
-    }
 }
 
 #endif

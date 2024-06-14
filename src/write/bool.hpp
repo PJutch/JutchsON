@@ -18,6 +18,11 @@ namespace JutchsON {
             return writeBool(b, context == Context::LINE_REST);
         }
     };
+
+    template <>
+    struct forcesMultilineImpl<bool> {
+        static inline constexpr bool value = false;
+    };
 }
 
 #endif

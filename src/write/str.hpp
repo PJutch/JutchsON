@@ -69,6 +69,31 @@ namespace JutchsON {
             return writeStr(s, context == Context::OBJECT);
         }
     };
+
+    template <>
+    struct forcesMultilineImpl<std::string> {
+        static inline constexpr bool value = false;
+    };
+
+    template <>
+    struct forcesMultilineImpl<std::string_view> {
+        static inline constexpr bool value = false;
+    };
+
+    template <>
+    struct forcesMultilineImpl<StringView> {
+        static inline constexpr bool value = false;
+    };
+
+    template <>
+    struct forcesMultilineImpl<const char*> {
+        static inline constexpr bool value = false;
+    };
+
+    template <>
+    struct forcesMultilineImpl<char*> {
+        static inline constexpr bool value = false;
+    };
 }
 
 #endif

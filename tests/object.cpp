@@ -245,18 +245,3 @@ TEST(Object, indentEmpty) {
 TEST(Object, indentEmptyLine) {
     EXPECT_EQ(JutchsON::indent("abc\n\nde"), "    abc\n\n    de");
 }
-
-TEST(Object, hasMultiline) {
-    std::vector<std::string> data{"abc\nde", "j"};
-    EXPECT_TRUE(JutchsON::hasMultiline(data));
-}
-
-TEST(Object, hasMultilineFalse) {
-    std::vector<std::string> data{"abc", "de"};
-    EXPECT_FALSE(JutchsON::hasMultiline(data));
-}
-
-TEST(Object, hasMultilineEmpty) {
-    std::vector<std::string> data{""};
-    EXPECT_FALSE(JutchsON::hasMultiline(data));
-}

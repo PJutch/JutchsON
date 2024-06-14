@@ -4,32 +4,32 @@
 
 TEST(List, writeOnelineList) {
     std::vector<std::string> data{"ab", "cde", "j"};
-    EXPECT_EQ(JutchsON::writeList(data), "ab cde j");
+    EXPECT_EQ(JutchsON::writeOnelineList(data), "ab cde j");
 }
 
 TEST(List, writeOnelineListEmpty) {
     std::vector<std::string> data{};
-    EXPECT_EQ(JutchsON::writeList(data), "");
+    EXPECT_EQ(JutchsON::writeOnelineList(data), "");
 }
 
 TEST(List, writeOnelineListSingleton) {
     std::vector<std::string> data{"abc"};
-    EXPECT_EQ(JutchsON::writeList(data), "abc");
+    EXPECT_EQ(JutchsON::writeOnelineList(data), "abc");
 }
 
 TEST(List, writeOnelineListQuoted) {
     std::vector<std::string> data{"ab", "cde", "j"};
-    EXPECT_EQ(JutchsON::writeList(data, true), "[ab cde j]");
+    EXPECT_EQ(JutchsON::writeOnelineList(data, true), "[ab cde j]");
 }
 
 TEST(List, writeOnelineListQuotedEmpty) {
     std::vector<std::string> data{};
-    EXPECT_EQ(JutchsON::writeList(data, true), "[]");
+    EXPECT_EQ(JutchsON::writeOnelineList(data, true), "[]");
 }
 
 TEST(List, writeOnelineListQuotedSingleton) {
     std::vector<std::string> data{"abc"};
-    EXPECT_EQ(JutchsON::writeList(data, true), "[abc]");
+    EXPECT_EQ(JutchsON::writeOnelineList(data, true), "[abc]");
 }
 
 TEST(List, writeMultilineList) {
@@ -47,12 +47,14 @@ TEST(List, writeMultilineListEmpty) {
     EXPECT_EQ(JutchsON::writeMultilineList(data), "[]");
 }
 
-TEST(List, writeList) {
-    std::vector<std::string> data{"ab", "cde", "j"};
-    EXPECT_EQ(JutchsON::writeList(data), "ab cde j");
+TEST(List, shouldBeMultilineType) {
+    EXPECT_TRUE(JutchsON::shouldBeMultiline(std::vector{std::vector{1, 2}, std::vector{3, 4}}));
 }
 
-TEST(List, writeListMultiline) {
-    std::vector<std::string> data{"[ab\ncde]", "j"};
-    EXPECT_EQ(JutchsON::writeList(data), "[\n    [ab\n    cde]\n    j\n]");
+TEST(List, shouldBeMultilineSize) {
+    EXPECT_TRUE(JutchsON::shouldBeMultiline(std::vector<int>(1000)));
+}
+
+TEST(List, shouldBeMultilineFalse) {
+    EXPECT_FALSE(JutchsON::shouldBeMultiline(std::vector{1, 2, 3}));
 }
