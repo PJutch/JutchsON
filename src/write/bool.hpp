@@ -4,13 +4,20 @@
 #include <string>
 
 namespace JutchsON {
-    inline std::string writeBool(bool s, bool allowEmpty = false) {
-        if (s) {
+    inline std::string writeBool(bool b, bool allowEmpty = false) {
+        if (b) {
             return allowEmpty ? "" : "true";
         } else {
             return "false";
         }
     }
+
+    template <>
+    struct Writer<bool> {
+        std::string operator() (bool b, Context context) {
+            return writeBool(b, context == Context::LINE_REST);
+        }
+    };
 }
 
 #endif

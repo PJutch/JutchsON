@@ -17,3 +17,15 @@ TEST(Bool, writeBoolEmpty) {
 TEST(Bool, writeBoolFalseAllowEmpty) {
     EXPECT_EQ(JutchsON::writeBool(false, true), "false");
 }
+
+TEST(Bool, writeGenericTrue) {
+    EXPECT_EQ(JutchsON::write(true), "true");
+}
+
+TEST(Bool, writeGenericFalse) {
+    EXPECT_EQ(JutchsON::write(false), "false");
+}
+
+TEST(Bool, writeGenericTrueEmpty) {
+    EXPECT_EQ(JutchsON::write(true, JutchsON::Context::LINE_REST), "");
+}
