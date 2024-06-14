@@ -1,6 +1,10 @@
 #ifndef JUTCHSON_PARSE_DICT_HPP_
 #define JUTCHSON_PARSE_DICT_HPP_
 
+#include "struct.hpp"
+
+#include "parse.hpp"
+
 #include "ParseResult.hpp"
 #include "StringView.hpp"
 #include "object.hpp"
@@ -137,11 +141,6 @@ namespace JutchsON {
             }
             return errors.empty() ? res : ParseResult<std::unordered_map<Key, Value>>{errors};
         } 
-    };
-
-    template <typename T>
-    concept Described = requires {
-        typename boost::describe::describe_members<T, boost::describe::mod_public>;
     };
 
     template <Described T>

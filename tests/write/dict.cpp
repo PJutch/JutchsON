@@ -44,3 +44,29 @@ TEST(Dict, writeUnorderedMapNested) {
     std::unordered_map<int, std::unordered_map<int, int>> value{{1, {{1, 2}, {3, 4}}}, {2, {{5, 6}, {7, 8}}}};
     EXPECT_EQ(JutchsON::write(value), "{\n    1 {\n        1 2\n        3 4\n    }\n    2 {\n        5 6\n        7 8\n    }\n}");
 }
+
+namespace {
+    struct TestStruct {
+        int ab;
+        int c = 1;
+        int de;
+    };
+
+    BOOST_DESCRIBE_STRUCT(TestStruct, (), (ab, c, de));
+
+    struct EmptyTestStruct {};
+
+    BOOST_DESCRIBE_STRUCT(EmptyTestStruct, (), ());
+}
+
+TEST(Dict, writeStruct) {
+    EXPECT_EQ(JutchsON::write(TestStruct{1, 2, 3}), "{\n    ab 1\n    c 2\n    de 3\n}");
+}
+
+TEST(Dict, writeStructDefaults) {
+    EXPECT_EQ(JutchsON::write(TestStruct{1}), "{\n    ab 1\n}");
+}
+
+TEST(Dict, writeStructEmpty) {
+    EXPECT_EQ(JutchsON::write(EmptyTestStruct{}), "{}");
+}
