@@ -28,6 +28,32 @@ namespace JutchsON {
         res.push_back('}');
         return res;
     }
+
+    template <typename Key, typename Value>
+    struct Writer<std::unordered_multimap<Key, Value>> {
+        std::string operator() (const std::unordered_multimap<Key, Value>& map, Context context) {
+            std::vector<std::pair<std::string, std::string>> pairs;
+            pairs.reserve(std::ssize(map));
+            for (const auto& [key, value] : map) {
+                pairs.emplace_back(write(key, Context::OBJECT), write(value, Context::LINE_REST));
+            }
+
+            return writeDict(pairs);
+        }
+    };
+
+    template <typename Key, typename Value>
+    struct Writer<std::unordered_map<Key, Value>> {
+        std::string operator() (const std::unordered_map<Key, Value>& map, Context context) {
+            std::vector<std::pair<std::string, std::string>> pairs;
+            pairs.reserve(std::ssize(map));
+            for (const auto& [key, value] : map) {
+                pairs.emplace_back(write(key, Context::OBJECT), write(value, Context::LINE_REST));
+            }
+
+            return writeDict(pairs);
+        }
+    };
 }
 
 #endif
