@@ -58,3 +58,19 @@ TEST(List, shouldBeMultilineSize) {
 TEST(List, shouldBeMultilineFalse) {
     EXPECT_FALSE(JutchsON::shouldBeMultiline(std::vector{1, 2, 3}));
 }
+
+TEST(List, writeVectorInt) {
+    EXPECT_EQ(JutchsON::write(std::vector{1, 2, 3}), "1 2 3");
+}
+
+TEST(List, writeVectorString) {
+    EXPECT_EQ(JutchsON::write(std::vector<std::string>{"abc", "de"}), "abc de");
+}
+
+TEST(List, writeVectorQuoted) {
+    EXPECT_EQ(JutchsON::write(std::vector{1, 2, 3}, JutchsON::Context::OBJECT), "[1 2 3]");
+}
+
+TEST(List, writeVectorVector) {
+    EXPECT_EQ(JutchsON::write(std::vector{std::vector{1, 2}, std::vector{3, 4}}), "[\n    1 2\n    3 4\n]");
+}

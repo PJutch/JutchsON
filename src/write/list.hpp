@@ -70,6 +70,25 @@ namespace JutchsON {
     bool shouldBeMultiline(Range range) {
         return true;
     }
+
+    template <typename T>
+    struct Writer<std::vector<T>> {
+        std::string operator() (const std::vector<T>& list, Context context) {
+            bool multiline = shouldBeMultiline(list);
+            
+            std::vector<std::string> elements;
+            elements.reserve(std::ssize(list));
+            for (const auto& element : list) {
+                elements.push_back(write(element, multiline ? Context::LINE : Context::OBJECT));
+            }
+
+            if (multiline) {
+                return writeMultilineList(elements);
+            } else {
+                return writeOnelineList(elements, context == Context::OBJECT);
+            }
+        }
+    };
 }
 
 #endif
