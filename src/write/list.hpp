@@ -1,6 +1,10 @@
 #ifndef JUTCHSON_WRITE_LIST_HPP_
 #define JUTCHSON_WRITE_LIST_HPP_
 
+#include "write.hpp"
+
+#include "tuple.hpp"
+
 #include "object.hpp"
 
 #include <span>
@@ -71,6 +75,20 @@ namespace JutchsON {
         return true;
     }
 
+    template <typename T, size_t i>
+    constexpr bool anyForcesMultiline() {
+        if constexpr (i >= std::tuple_size_v<T>) {
+            return false;
+        } else {
+            return forcesMultiline<std::tuple_element_t<i, T>> || anyForcesMultiline<T, i + 1>();
+        }
+    }
+
+    template <Tuplelike T>
+    constexpr bool shouldBeMultiline(const T& tuple) {
+        return std::tuple_size_v<T> > 40 || anyForcesMultiline<T, 0>();
+    }
+
     template <typename T>
     struct Writer<std::vector<T>> {
         std::string operator() (const std::vector<T>& list, Context context) {
@@ -81,6 +99,32 @@ namespace JutchsON {
             for (const auto& element : list) {
                 elements.push_back(write(element, multiline ? Context::LINE : Context::OBJECT));
             }
+
+            if (multiline) {
+                return writeMultilineList(elements);
+            } else {
+                return writeOnelineList(elements, context == Context::OBJECT);
+            }
+        }
+    };
+
+    template <typename T, size_t i>
+    void tupleElements(const T& tuple, Context context, std::vector<std::string>& elements) {
+        if constexpr (i >= std::tuple_size_v<T>) {
+            return;
+        } else {
+            elements.push_back(write(std::get<i>(tuple), context));
+            return tupleElements<T, i + 1>(tuple, context, elements);
+        }
+    }
+
+    template <Tuplelike T>
+    struct Writer<T> {
+        std::string operator() (const T& tuple, Context context) {
+            bool multiline = shouldBeMultiline(tuple);
+
+            std::vector<std::string> elements;
+            tupleElements<T, 0>(tuple, multiline ? Context::LINE : Context::OBJECT, elements);
 
             if (multiline) {
                 return writeMultilineList(elements);

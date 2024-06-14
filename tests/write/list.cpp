@@ -74,3 +74,23 @@ TEST(List, writeVectorQuoted) {
 TEST(List, writeVectorVector) {
     EXPECT_EQ(JutchsON::write(std::vector{std::vector{1, 2}, std::vector{3, 4}}), "[\n    1 2\n    3 4\n]");
 }
+
+TEST(List, writeTupleInt) {
+    EXPECT_EQ(JutchsON::write(std::tuple{1, 2, 3}), "1 2 3");
+}
+
+TEST(List, writeTupleHeterogeneous) {
+    EXPECT_EQ(JutchsON::write(std::tuple<int, std::string>{1, "abcdefg"}), "1 abcdefg");
+}
+
+TEST(List, writeTupleSingleton) {
+    EXPECT_EQ(JutchsON::write(std::tuple<int>{1}), "1");
+}
+
+TEST(List, writeTupleEmpty) {
+    EXPECT_EQ(JutchsON::write(std::tuple<>{}), "");
+}
+
+TEST(List, writeTupleNested) {
+    EXPECT_EQ(JutchsON::write(std::tuple<int, std::tuple<int, int>>{1, {2, 3}}), "[\n    1\n    2 3\n]");
+}
