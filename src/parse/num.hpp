@@ -1,6 +1,8 @@
 #ifndef JUTCHSON_PARSE_NUM_HPP_
 #define JUTCHSON_PARSE_NUM_HPP_
 
+#include "../num.hpp"
+
 #include "parse.hpp"
 
 #include "StringView.hpp"
@@ -191,18 +193,12 @@ namespace JutchsON {
         }
     }
 
-    template <typename T>
-    concept UnsignedInteger = std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
-
     template <UnsignedInteger T>
     struct Parser<T> {
         ParseResult<T> operator() (StringView s, Context) {
             return parseUint<T>(s);
         }
     };
-
-    template <typename T>
-    concept SignedInteger = std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed;
 
     template <SignedInteger T>
     struct Parser<T> {
@@ -211,19 +207,12 @@ namespace JutchsON {
         }
     };
 
-    template <typename T>
-    concept UnsignedFloat = std::numeric_limits<T>::is_specialized 
-        && !std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed;
-
     template <UnsignedFloat T>
     struct Parser<T> {
         ParseResult<T> operator() (StringView s, Context) {
             return parseNonnegativeFloat<T>(s);
         }
     };
-
-    template <typename T>
-    concept SignedFloat = !std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed;
 
     template <SignedFloat T>
     struct Parser<T> {

@@ -1,6 +1,9 @@
 #ifndef JUTCHSON_WRITE_NUM_HPP_
 #define JUTCHSON_WRITE_NUM_HPP_
 
+#include "../num.hpp"
+
+#include "write/write.hpp"
 #include "write/list.hpp"
 
 #include <algorithm>
@@ -86,6 +89,33 @@ namespace JutchsON {
         return writeNonnegativeFloat(x);
     }
 
+    template <UnsignedInteger T>
+    struct Writer<T> {
+        std::string operator() (T n, Context) {
+            return writeUint<T>(n);
+        }
+    };
+
+    template <SignedInteger T>
+    struct Writer<T> {
+        std::string operator() (T n, Context) {
+            return writeInt<T>(n);
+        }
+    };
+
+    template <UnsignedFloat T>
+    struct Writer<T> {
+        std::string operator() (T x, Context) {
+            return writeNonnegativeFloat<T>(x);
+        }
+    };
+
+    template <SignedFloat T>
+    struct Writer<T> {
+        std::string operator() (T x, Context) {
+            return writeFloat<T>(x);
+        }
+    };
 
     template <typename T>
     concept Number = std::numeric_limits<T>::is_specialized;

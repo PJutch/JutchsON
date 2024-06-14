@@ -77,3 +77,15 @@ TEST(Num, writeFloatNegativeZero) {
 TEST(Num, writeFloatNegativeInf) {
 	EXPECT_EQ(JutchsON::writeFloat(-INFINITY), "-inf");
 }
+
+TEST(Num, writeGenericUnsignedInt) {
+	EXPECT_EQ(JutchsON::write(123u), "123");
+}
+
+TEST(Num, writeGenericInt) {
+	EXPECT_EQ(JutchsON::write(-123), "-123");
+}
+
+TEST(Num, writeGenericFloat) {
+	EXPECT_EQ(JutchsON::write(1.25), "1.25");
+}
