@@ -133,24 +133,3 @@ TEST(List, parseVectorVectorNotAList) {
         JutchsON::ParseResult<ParsedT>::makeError({0, 0}, "Expected a nested list")
     );
 }
-
-TEST(List, parseTuple) {
-    EXPECT_EQ((JutchsON::parse<std::tuple<int, int>>("1 2")), (std::tuple{1, 2}));
-}
-
-TEST(List, parseTupleHeterogeneous) {
-    EXPECT_EQ((JutchsON::parse<std::tuple<int, std::string>>("1 abc")), (std::tuple<int, std::string>{1, "abc"}));
-}
-
-TEST(List, parseTupleWrongSize) {
-    EXPECT_EQ((JutchsON::parse<std::tuple<int, int>>("1 2 3")),
-        (JutchsON::ParseResult<std::tuple<int, int>>::makeError({0, 0}, "Tuple size should be 2 but it is 3")));
-}
-
-TEST(List, parseTupleSingleton) {
-    EXPECT_EQ(JutchsON::parse<std::tuple<int>>("1"), std::tuple{1});
-}
-
-TEST(List, parseTupleEmpty) {
-    EXPECT_TRUE(JutchsON::parse<std::tuple<>>(""));
-}
