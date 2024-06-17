@@ -38,7 +38,7 @@ namespace JutchsON {
         } else {
             if (type == i) {
                 using ValueT = std::remove_cv_t<std::variant_alternative_t<i, Variant>>;
-                return parse<ValueT>(value).then([&](const ValueT& value) {
+                return parse<ValueT>(value, Context::LINE_REST).then([&](const ValueT& value) {
                     return ParseResult{Variant{std::in_place_index<i>, value}};
                 });
             }
@@ -48,7 +48,7 @@ namespace JutchsON {
 
     template <typename... Types>
     struct Parser<std::variant<Types...>> {
-        ParseResult<std::variant<Types...>> operator() (StringView s, Context) {
+        ParseResult<std::variant<Types...>> operator() (StringView s, Context context) {
             return parseVariant(s).then([&](auto pair) {
                 auto [typeStr, valueStr] = pair;
                 return parse<size_t>(typeStr).then([&](size_t type) {
