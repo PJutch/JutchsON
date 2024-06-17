@@ -8,6 +8,7 @@
 #include "parse/str.hpp"
 #include "parse/tuple.hpp"
 #include "parse/struct.hpp"
+#include "parse/variant.hpp"
 
 #include "write/num.hpp"
 #include "write/list.hpp"
