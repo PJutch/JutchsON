@@ -18,7 +18,7 @@ namespace JutchsON {
             return 0;
         }
 
-        if (s.front() == '[' || s.front() == '{' || s.front() == '"') {
+        if (s.front() == '[' || s.front() == '{' || s.front() == '<' || s.front() == '"') {
             std::vector<char> brackets;
             for (ptrdiff_t i = 0; i < std::ssize(s); ++i) {
                 if (!brackets.empty() && brackets.back() == '\\') {
@@ -29,16 +29,27 @@ namespace JutchsON {
                     } else if (s[i] == '\\') {
                         brackets.push_back('\\');
                     }
-                } else if (s[i] == '[' || s[i] == '{' || s[i] == '"') {
+                } else if (s[i] == '[' || s[i] == '{' || s[i] == '<' || s[i] == '"') {
                     brackets.push_back(s[i]);
                 } else if (s[i] == ']') {
                     if (brackets.back() == '{') {
                         return ParseResult<ptrdiff_t>::makeError(s.location(i), "Expected }, got ]");
+                    } else if (brackets.back() == '<') {
+                        return ParseResult<ptrdiff_t>::makeError(s.location(i), "Expected >, got ]");
                     }
                     brackets.pop_back();
                 } else if (s[i] == '}') {
                     if (brackets.back() == '[') {
                         return ParseResult<ptrdiff_t>::makeError(s.location(i), "Expected ], got }");
+                    } else if (brackets.back() == '<') {
+                        return ParseResult<ptrdiff_t>::makeError(s.location(i), "Expected >, got }");
+                    }
+                    brackets.pop_back();
+                } else if (s[i] == '>') {
+                    if (brackets.back() == '[') {
+                        return ParseResult<ptrdiff_t>::makeError(s.location(i), "Expected ], got >");
+                    } else if (brackets.back() == '{') {
+                        return ParseResult<ptrdiff_t>::makeError(s.location(i), "Expected }, got >");
                     }
                     brackets.pop_back();
                 }
@@ -52,16 +63,18 @@ namespace JutchsON {
                 return ParseResult<ptrdiff_t>::makeError(s.location(std::ssize(s)), "Expected ], got eof");
             } else if (brackets.back() == '{') {
                 return ParseResult<ptrdiff_t>::makeError(s.location(std::ssize(s)), "Expected }, got eof");
+            } else if (brackets.back() == '<') {
+                return ParseResult<ptrdiff_t>::makeError(s.location(std::ssize(s)), "Expected >, got eof");
             } else if (brackets.back() == '"') {
                 return ParseResult<ptrdiff_t>::makeError(s.location(std::ssize(s)), "Expected closing \", got eof");
             } else {
                 return ParseResult<ptrdiff_t>::makeError(s.location(std::ssize(s)), "Expected escape sequence, got eof after \\");
             }
-        } else if (s.front() == ']' || s.front() == '}') {
+        } else if (s.front() == ']' || s.front() == '}' || s.front() == '>') {
             return ParseResult<ptrdiff_t>::makeError(s.location(), std::format("Unexpected {}", s.front()));
         } else {
             return std::ranges::find_if(s, [](char c) {
-                return isspace(c) || c == '[' || c == '{' || c == '"' || c == ']' || c == '{';
+                return isspace(c) || c == '[' || c == '{' || c == '<' || c == '"' || c == ']' || c == '}' || c == '>';
             }) - s.begin();
         }
     }

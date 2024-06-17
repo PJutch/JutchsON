@@ -99,8 +99,29 @@ TEST(Object, findObjectEndBraces) {
     EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 10);
 }
 
+TEST(Object, findObjectEndNoAngleBracket) {
+    std::string_view s = "<abc ij xyz";
+    JutchsON::Location location{0, std::ssize(s)};
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), JutchsON::ParseResult<ptrdiff_t>::makeError(location, "Expected >, got eof"));
+}
+
+TEST(Object, findObjectEndWrongAngleBracket) {
+    std::string_view s = "[abc ij> xyz";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), JutchsON::ParseResult<ptrdiff_t>::makeError(JutchsON::Location{0, 7}, "Expected ], got >"));
+}
+
+TEST(Object, findObjectEndAngleBrackets) {
+    std::string_view s = "<abc de j>  fgh\n ";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 10);
+}
+
 TEST(Object, findObjectEndNestedBraces) {
     std::string_view s = "{abc {de j} xyz}  fgh\n ";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 16);
+}
+
+TEST(Object, findObjectEndNestedAngleBrackets) {
+    std::string_view s = "<abc <de j> xyz>  fgh\n ";
     EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 16);
 }
 
@@ -114,9 +135,29 @@ TEST(Object, findObjectEndBracket) {
     EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 3);
 }
 
+TEST(Object, findObjectEndClosingBracket) {
+    std::string_view s = "fghabcxy]";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 8);
+}
+
 TEST(Object, findObjectEndBrace) {
     std::string_view s = "fgh{abcxy}";
     EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 3);
+}
+
+TEST(Object, findObjectEndClosingBrace) {
+    std::string_view s = "fghabcxy}";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 8);
+}
+
+TEST(Object, findObjectEndAngleBracket) {
+    std::string_view s = "fgh<abcxy>";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 3);
+}
+
+TEST(Object, findObjectEndClosingAngleBracket) {
+    std::string_view s = "fghabcxy>";
+    EXPECT_EQ(JutchsON::findOnelineObjectEnd(s), 8);
 }
 
 TEST(Object, findObjectEndQuotes) {

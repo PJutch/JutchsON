@@ -19,6 +19,15 @@ TEST(Variant, parseVariantEmpty) {
         (JutchsON::ParseResult<std::pair<JutchsON::StringView, JutchsON::StringView>>::makeError({0, 0}, "Variant can't be empty")));
 }
 
+TEST(Variant, parseVariantAngleBrackets) {
+    EXPECT_EQ(JutchsON::parseVariant("<abc de>"), (std::pair<JutchsON::StringView, JutchsON::StringView>{"abc", "de"}));
+}
+
+TEST(Variant, parseVariantEmptyAngleBrackets) {
+    EXPECT_EQ(JutchsON::parseVariant("<>"),
+        (JutchsON::ParseResult<std::pair<JutchsON::StringView, JutchsON::StringView>>::makeError({0, 1}, "Variant can't be empty")));
+}
+
 TEST(Variant, parseStdVariantFirst) {
     EXPECT_EQ((JutchsON::parse<std::variant<int, std::string>>("0 123")), (std::variant<int, std::string>{123}));
 }

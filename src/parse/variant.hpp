@@ -13,6 +13,13 @@
 namespace JutchsON {
     inline ParseResult<std::pair<StringView, StringView>> parseVariant(StringView s) {
         s = strip(s);
+        if (!s.empty() && s.front() == '<') {
+            s.remove_prefix(1);
+            s.remove_suffix(1);
+
+            s = strip(s);
+        }
+
         if (s.empty()) {
             return ParseResult<std::pair<StringView, StringView>>::makeError(s.location(), "Variant can't be empty");
         }
