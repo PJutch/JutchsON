@@ -51,10 +51,10 @@ TEST(Variant, parseStdVariantInvalidValue) {
         (JutchsON::ParseResult<std::variant<int, std::string>>::makeError({0, 2}, "Number can't contain char 'g'")));
 }
 
-TEST(Variant, parseStdVariantContexts) {
+TEST(Variant, parseStdVariantValueContext) {
     EXPECT_EQ((JutchsON::parse<std::variant<int, bool>>("1")), (std::variant<int, bool>{true}));
 }
 
-TEST(Variant, parseStdVariantAngleBracketsContexts) {
+TEST(Variant, parseStdVariantAngleBracketsValueContext) {
     EXPECT_EQ((JutchsON::parse<std::variant<int, bool>>("<1>")), (std::variant<int, bool>{true}));
 }

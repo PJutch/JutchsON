@@ -17,6 +17,7 @@
 #include "write/str.hpp"
 #include "write/tuple.hpp"
 #include "write/struct.hpp"
+#include "write/variant.hpp"
 
 #include "Location.hpp"
 #include "ParseResult.hpp"
