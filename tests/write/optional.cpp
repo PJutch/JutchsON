@@ -38,6 +38,6 @@ TEST(Optional, writeStdOpitonalNestedNull) {
     EXPECT_EQ(JutchsON::write(std::optional<std::optional<int>>{}), "null");
 }
 
-TEST(Optional, writeStdOpitonalNestedAngleBracketsNull) {
+TEST(Optional, writeStdOpitonalNestedChevronsNull) {
     EXPECT_EQ(JutchsON::write(std::optional<std::optional<int>>{{}}), "<null>");
 }

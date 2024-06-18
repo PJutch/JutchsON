@@ -30,7 +30,7 @@ TEST(Variant, writeStdVariantSecond) {
     EXPECT_EQ((JutchsON::write(std::variant<int, std::string>{"abc def j"})), "1 abc def j");
 }
 
-TEST(Variant, wrtieStdVariantAngleBrackets) {
+TEST(Variant, wrtieStdVariantChevrons) {
     EXPECT_EQ((JutchsON::write(std::variant<int, std::string>{123}, JutchsON::Context::OBJECT)), "<0 123>");
 }
 
@@ -38,6 +38,6 @@ TEST(Variant, wrtieStdVariantValueContext) {
     EXPECT_EQ((JutchsON::write(std::variant<int, bool>{true})), "1");
 }
 
-TEST(Variant, wrtieStdVariantAngleBracketsValueContext) {
+TEST(Variant, wrtieStdVariantChevronsValueContext) {
     EXPECT_EQ((JutchsON::write(std::variant<int, bool>{true}, JutchsON::Context::OBJECT)), "<1>");
 }
