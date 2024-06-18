@@ -7,6 +7,7 @@
 #include "StringView.hpp"
 #include "object.hpp"
 #include "strip.hpp"
+#include "filesystem.hpp"
 
 #include <unordered_map>
 #include <vector>
@@ -118,25 +119,54 @@ namespace JutchsON {
             }
             return res;
         }
+
+        ParseResult<std::unordered_multimap<Key, Value>> operator() (const std::filesystem::path* path) {
+            if (!std::filesystem::is_directory(*path)) {
+                return (*this)(std::string_view{readWholeFile(*path)}, Context::LINE);
+            }
+
+            ParseResult<std::unordered_multimap<Key, Value>> res{{}};
+            for (const auto& elementPath : directoryElements(*path)) {
+                auto pair = parse<Key>(std::string_view{elementPath.stem().generic_string()}, Context::OBJECT)
+                        .combine(parseFile<Value>(elementPath), [](const Key& key, const Value& value) {
+                    return std::pair{key, value};
+                });
+
+                res = res.combine(pair, [](const std::unordered_multimap<Key, Value>& map, const std::pair<Key, Value>& pair) {
+                    std::unordered_multimap<Key, Value> newMap = map;
+                    newMap.insert(pair);
+                    return newMap;
+                });
+            }
+            return res;
+        }
     };
+
+    template <typename Key, typename Value>
+    ParseResult<std::unordered_map<Key, Value>> validateUniqueness(const std::unordered_multimap<Key, Value>& multimap) {
+        std::unordered_map<Key, Value> res;
+        std::vector<ParseError> errors;
+        for (const auto& [key, value] : multimap) {
+            if (!res.try_emplace(key, value).second) {
+                errors.emplace_back(Location{}, "Duplicated key detected");
+            }
+        }
+        return errors.empty() ? res : ParseResult<std::unordered_map<Key, Value>>{errors};
+    }
 
     template <typename Key, typename Value>
     struct Parser<std::unordered_map<Key, Value>> {
         ParseResult<std::unordered_map<Key, Value>> operator() (StringView s, Context context) {
-            auto multimap = parse<std::unordered_multimap<Key, Value>>(s, context);
-            if (!multimap) {
-                return multimap.errors();
-            }
-
-            std::unordered_map<Key, Value> res;
-            std::vector<ParseError> errors;
-            for (const auto& [key, value] : *multimap) {
-                if (!res.try_emplace(key, value).second) {
-                    errors.emplace_back(s.location(), "Duplicated key detected");
-                }
-            }
-            return errors.empty() ? res : ParseResult<std::unordered_map<Key, Value>>{errors};
+            return parse<std::unordered_multimap<Key, Value>>(s, context).then([&](const auto& multimap) {
+                return validateUniqueness(multimap);
+            });
         } 
+
+        ParseResult<std::unordered_map<Key, Value>> operator() (const std::filesystem::path* path) {
+            return parseFile<std::unordered_multimap<Key, Value>>(*path).then([&](const auto& multimap) {
+                return validateUniqueness(multimap);
+            });
+        }
     };
 }
 

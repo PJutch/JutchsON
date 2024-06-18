@@ -254,7 +254,7 @@ TEST(Num, parseGenericFloat) {
 }
 
 TEST(Num, parseFile) {
-	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/int.txt"), 123);
+	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/int.juon"), 123);
 }
 
 TEST(Num, parseFileDirectory) {
