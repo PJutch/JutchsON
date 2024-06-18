@@ -122,12 +122,12 @@ namespace JutchsON {
 
         ParseResult<std::unordered_multimap<Key, Value>> operator() (const std::filesystem::path* path) {
             if (!std::filesystem::is_directory(*path)) {
-                return (*this)(std::string_view{readWholeFile(*path)}, Context::LINE);
+                return (*this)(readWholeFile(*path), Context::LINE);
             }
 
             ParseResult<std::unordered_multimap<Key, Value>> res{{}};
             for (const auto& elementPath : directoryElements(*path)) {
-                auto pair = parse<Key>(std::string_view{elementPath.stem().generic_string()}, Context::OBJECT)
+                auto pair = parse<Key>(elementPath.stem().generic_string(), Context::OBJECT)
                         .combine(parseFile<Value>(elementPath), [](const Key& key, const Value& value) {
                     return std::pair{key, value};
                 });

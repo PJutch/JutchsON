@@ -38,7 +38,7 @@ namespace JutchsON {
     template <>
     struct Writer<std::string> {
         std::string operator() (const std::string& s, Context context) {
-            return writeStr(std::string_view{s}, context == Context::OBJECT);
+            return writeStr(s, context == Context::OBJECT);
         }
     };
 
@@ -52,14 +52,14 @@ namespace JutchsON {
     template <>
     struct Writer<const char*> {
         std::string operator() (const char* s, Context context) {
-            return writeStr(std::string_view{s}, context == Context::OBJECT);
+            return writeStr(s, context == Context::OBJECT);
         }
     };
 
     template <>
     struct Writer<char*> {
         std::string operator() (char* s, Context context) {
-            return writeStr(std::string_view{s}, context == Context::OBJECT);
+            return writeStr(s, context == Context::OBJECT);
         }
     };
 

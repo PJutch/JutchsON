@@ -219,7 +219,7 @@ namespace JutchsON {
             if (std::filesystem::is_directory(*path)) {
                 return ParseResult<T>::makeError({}, "A directory can't be interpreted as an int");
             } else {
-                return (*this)(std::string_view{readWholeFile(*path)}, context);
+                return (*this)(readWholeFile(*path), context);
             }
         }
     };

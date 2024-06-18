@@ -34,7 +34,7 @@ namespace JutchsON {
         if (std::filesystem::is_directory(path)) {
             return ParseResult<T>::makeError({}, std::format("Expected a file, got directory {}", path.generic_string()));
         } else {
-            return parse<T>(std::string_view{readWholeFile(path)});
+            return parse<T>(readWholeFile(path));
         }
     }
 }

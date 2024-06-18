@@ -18,7 +18,7 @@ namespace JutchsON {
             if (!pair.second.empty()) {
                 res.push_back(' ');
                 std::string indented = indent(pair.second);
-                res.append(strip(std::string_view{indented}).asStd());
+                res.append(strip(indented).asStd());
             }
         }
 

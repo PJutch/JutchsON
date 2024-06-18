@@ -105,10 +105,10 @@ namespace JutchsON {
         StringView() : base{}, offset{0}, len{0} {}
 
         StringView(std::string_view s) : base{s}, offset{0}, len{std::ssize(base)} {}
+        StringView(const std::string& s) : base{s}, offset{0}, len{std::ssize(base)} {}
+        StringView(const char* s) : base{s}, offset{0}, len{std::ssize(base)} {}
 
         StringView(iterator begin, iterator end) : base{begin.baseString()}, offset{begin.offset()}, len{end - begin} {}
-
-        StringView(const char* s) : base{s}, offset{0}, len{std::ssize(base)} {}
 
         iterator begin() const {
             return {base.begin() + offset, base};
