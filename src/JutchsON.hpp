@@ -9,6 +9,7 @@
 #include "parse/tuple.hpp"
 #include "parse/struct.hpp"
 #include "parse/variant.hpp"
+#include "parse/optional.hpp"
 
 #include "write/num.hpp"
 #include "write/list.hpp"
