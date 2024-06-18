@@ -10,6 +10,7 @@
 #include "Context.hpp"
 #include "escape.hpp"
 #include "strip.hpp"
+#include "filesystem.hpp"
 
 #include <limits>
 #include <algorithm>
@@ -198,12 +199,28 @@ namespace JutchsON {
         ParseResult<T> operator() (StringView s, Context) {
             return parseUint<T>(s);
         }
+
+        ParseResult<T> operator() (const std::filesystem::path* path, Context context) {
+            if (std::filesystem::is_directory(*path)) {
+                return ParseResult<T>::makeError({}, "A directory can't be interpreted as an uint");
+            } else {
+                return (*this)(readWholeFile(*path), context);
+            }
+        }
     };
 
     template <SignedInteger T>
     struct Parser<T> {
         ParseResult<T> operator() (StringView s, Context) {
             return parseInt<T>(s);
+        }
+
+        ParseResult<T> operator() (const std::filesystem::path* path, Context context) {
+            if (std::filesystem::is_directory(*path)) {
+                return ParseResult<T>::makeError({}, "A directory can't be interpreted as an int");
+            } else {
+                return (*this)(std::string_view{readWholeFile(*path)}, context);
+            }
         }
     };
 
@@ -212,12 +229,28 @@ namespace JutchsON {
         ParseResult<T> operator() (StringView s, Context) {
             return parseNonnegativeFloat<T>(s);
         }
+
+        ParseResult<T> operator() (const std::filesystem::path* path, Context context) {
+            if (std::filesystem::is_directory(*path)) {
+                return ParseResult<T>::makeError({}, "A directory can't be interpreted as a nonnegative float");
+            } else {
+                return (*this)(readWholeFile(*path), context);
+            }
+        }
     };
 
     template <SignedFloat T>
     struct Parser<T> {
         ParseResult<T> operator() (StringView s, Context) {
             return parseFloat<T>(s);
+        }
+
+        ParseResult<T> operator() (const std::filesystem::path* path, Context context) {
+            if (std::filesystem::is_directory(*path)) {
+                return ParseResult<T>::makeError({}, "A directory can't be interpreted as a float");
+            } else {
+                return (*this)(readWholeFile(*path), context);
+            }
         }
     };
 }

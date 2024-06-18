@@ -252,3 +252,12 @@ TEST(Num, parseGenericInt) {
 TEST(Num, parseGenericFloat) {
 	EXPECT_DOUBLE_EQ(*JutchsON::parse<double>("1.23"), 1.23);
 }
+
+TEST(Num, parseFile) {
+	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/int.txt"), 123);
+}
+
+TEST(Num, parseFileDirectory) {
+	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/dir"), 
+		JutchsON::ParseResult<int>::makeError({}, "Expected a file, got directory ../../../../tests/parse/dir"));
+}
