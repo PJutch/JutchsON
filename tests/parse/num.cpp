@@ -254,10 +254,10 @@ TEST(Num, parseGenericFloat) {
 }
 
 TEST(Num, parseFile) {
-	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/int.juon"), 123);
+	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/files/int.juon"), 123);
 }
 
 TEST(Num, parseFileDirectory) {
-	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/dir"), 
-		JutchsON::ParseResult<int>::makeError({}, "Expected a file, got directory ../../../../tests/parse/dir"));
+	EXPECT_EQ(JutchsON::parseFile<int>("../../../../tests/parse/files/dir"), 
+		JutchsON::ParseResult<int>::makeError({}, "Expected a file, got directory ../../../../tests/parse/files/dir"));
 }

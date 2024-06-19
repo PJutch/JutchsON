@@ -83,12 +83,12 @@ TEST(Dict, parseUnorderedMulimapIntNested) {
 }
 
 TEST(Dict, parseUnorderedMultiMapDirectory) {
-    EXPECT_EQ((JutchsON::parseFile<std::unordered_multimap<std::string, int>>("../../../../tests/parse/dir")),
+    EXPECT_EQ((JutchsON::parseFile<std::unordered_multimap<std::string, int>>("../../../../tests/parse/files/dir")),
         (std::unordered_multimap<std::string, int>{{"ab", 123}, {"c", 456}, {"de", 789}}));
 }
 
 TEST(Dict, parseUnorderedMultiMapDirectoryIntKey) {
-    EXPECT_EQ((JutchsON::parseFile<std::unordered_multimap<int, int>>("../../../../tests/parse/dirIntNames")),
+    EXPECT_EQ((JutchsON::parseFile<std::unordered_multimap<int, int>>("../../../../tests/parse/files/intNamesDir")),
         (std::unordered_multimap<int, int>{{1, 2}, {2, 5}}));
 }
 

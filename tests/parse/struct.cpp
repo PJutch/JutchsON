@@ -43,7 +43,7 @@ TEST(Struct, parseStructErrors) {
 }
 
 TEST(Struct, parseStructDirectory) {
-	EXPECT_EQ(JutchsON::parseFile<TestStruct>("../../../../tests/parse/dir"), (TestStruct{123, 456, 789}));
+	EXPECT_EQ(JutchsON::parseFile<TestStruct>("../../../../tests/parse/files/dir"), (TestStruct{123, 456, 789}));
 }
 
 TEST(Struct, parseStructEmpty) {
@@ -51,5 +51,5 @@ TEST(Struct, parseStructEmpty) {
 }
 
 TEST(Struct, parseStructEmptyDirectory) {
-	EXPECT_TRUE(JutchsON::parseFile<EmptyTestStruct>("../../../../tests/parse/dirEmpty"));
+	EXPECT_TRUE(JutchsON::parseFile<EmptyTestStruct>("../../../../tests/parse/files/emptyDir"));
 }
