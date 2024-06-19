@@ -42,6 +42,14 @@ TEST(Struct, parseStructErrors) {
 	EXPECT_EQ(JutchsON::parse<TestStruct>("ab 1\n\\xGG 2\nde 3\nde 3\nunknown 4"), result);
 }
 
+TEST(Struct, parseStructDirectory) {
+	EXPECT_EQ(JutchsON::parseFile<TestStruct>("../../../../tests/parse/dir"), (TestStruct{123, 456, 789}));
+}
+
 TEST(Struct, parseStructEmpty) {
 	EXPECT_TRUE(JutchsON::parse<EmptyTestStruct>(""));
+}
+
+TEST(Struct, parseStructEmptyDirectory) {
+	EXPECT_TRUE(JutchsON::parseFile<EmptyTestStruct>("../../../../tests/parse/dirEmpty"));
 }
