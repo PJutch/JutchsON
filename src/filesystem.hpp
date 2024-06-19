@@ -13,6 +13,11 @@ namespace JutchsON {
         return {std::istreambuf_iterator{file}, std::istreambuf_iterator<char>{}};
     }
 
+    inline void writeWholeFile(const std::filesystem::path& path, std::string_view s) {
+        std::ofstream file{path};
+        file << s;
+    }
+
     inline std::vector<std::filesystem::path> directoryElements(const std::filesystem::path& path) {
         std::vector<std::filesystem::path> res;
         for (std::filesystem::directory_iterator iter{path}; iter != std::filesystem::directory_iterator{}; ++iter) {
