@@ -1,5 +1,5 @@
-add_library(dependencies INTERFACE)
-add_library(test_dependencies INTERFACE)
+add_library(JutchsON_dependencies INTERFACE)
+add_library(JutchsON_test_dependencies INTERFACE)
 
 include(FetchContent)
 
@@ -12,6 +12,6 @@ if(NOT TARGET GTest::gtest_main)
     fetchGit(googletest googletest.zip https://github.com/google/googletest origin/v1.13.x)
 endif()
 
-addDependency(dependencies GTest::gtest_main)
+addDependency(JutchsON_test_dependencies GTest::gtest_main)
 
-target_link_libraries(test_dependencies INTERFACE dependencies)
+target_link_libraries(JutchsON_test_dependencies INTERFACE JutchsON_dependencies)
