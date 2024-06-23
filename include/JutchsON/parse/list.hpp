@@ -3,10 +3,10 @@
 
 #include "parse.hpp"
 
-#include "ParseResult.hpp"
-#include "StringView.hpp"
-#include "object.hpp"
-#include "strip.hpp"
+#include "../ParseResult.hpp"
+#include "../StringView.hpp"
+#include "../object.hpp"
+#include "../strip.hpp"
 
 #include <vector>
 

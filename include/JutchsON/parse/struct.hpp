@@ -2,13 +2,13 @@
 #define JUTCHSON_PARSE_STRUCT_HPP_
 
 #include "../struct.hpp"
-#include "parse/dict.hpp"
+#include "dict.hpp"
 
 #include "parse.hpp"
 
-#include "ParseResult.hpp"
-#include "StringView.hpp"
-#include "strip.hpp"
+#include "../ParseResult.hpp"
+#include "../StringView.hpp"
+#include "../strip.hpp"
 
 #include <boost/describe.hpp>
 

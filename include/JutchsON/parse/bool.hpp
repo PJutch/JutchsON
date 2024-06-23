@@ -1,9 +1,9 @@
 #ifndef JUTCHSON_PARSE_BOOL_HPP_
 #define JUTCHSON_PARSE_BOOL_HPP_
 
-#include "ParseResult.hpp"
-#include "StringView.hpp"
-#include "strip.hpp"
+#include "../ParseResult.hpp"
+#include "../StringView.hpp"
+#include "../strip.hpp"
 
 #include <format>
 

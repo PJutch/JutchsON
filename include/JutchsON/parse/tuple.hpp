@@ -2,13 +2,13 @@
 #define JUTCHSON_PARSE_TUPLE_HPP_
 
 #include "../tuple.hpp"
-#include "parse/list.hpp"
+#include "list.hpp"
 
 #include "parse.hpp"
 
-#include "ParseResult.hpp"
-#include "StringView.hpp"
-#include "strip.hpp"
+#include "../ParseResult.hpp"
+#include "../StringView.hpp"
+#include "../strip.hpp"
 
 #include <span>
 

@@ -3,8 +3,8 @@
 
 #include "../num.hpp"
 
-#include "write/write.hpp"
-#include "write/list.hpp"
+#include "write.hpp"
+#include "list.hpp"
 
 #include <algorithm>
 #include <string>

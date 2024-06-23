@@ -6,8 +6,7 @@ add_executable(JutchsON_tests "Location.cpp" "ParseResult.cpp" "escape.cpp"  "St
                               "parse/tuple.cpp" "parse/struct.cpp" "write/tuple.cpp" "write/struct.cpp" 
                               "parse/variant.cpp" "write/variant.cpp" "parse/optional.cpp" "write/optional.cpp")
 
-target_link_libraries(JutchsON_tests JutchsON_test_dependencies)
-target_include_directories(JutchsON_tests PRIVATE ../src)
+target_link_libraries(JutchsON_tests JutchsON JutchsON_test_dependencies)
 setDefaultCompilerOptions(JutchsON_tests PRIVATE)
 
 include(GoogleTest)

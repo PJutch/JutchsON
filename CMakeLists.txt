@@ -16,8 +16,9 @@ include(cmake/FetchDependencies.cmake)
 
 include(cmake/DefaultCompilerOptions.cmake)
 
-add_library(JutchsON INTERFACE src/JutchsON.hpp)
-target_link_libraries(JutchsON INTERFACE sources JutchsON_dependencies)
+add_library(JutchsON INTERFACE include/JutchsON.hpp)
+target_link_libraries(JutchsON INTERFACE JutchsON_dependencies)
+target_include_directories(JutchsON INTERFACE include)
 setDefaultCompilerOptions(JutchsON INTERFACE)
 
 add_subdirectory(tests)

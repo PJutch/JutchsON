@@ -3,7 +3,7 @@
 
 #include "write.hpp"
 
-#include "object.hpp"
+#include "../object.hpp"
 
 #include <span>
 #include <algorithm>

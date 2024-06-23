@@ -20,7 +20,7 @@ if((NOT TARGET Boost.Stacktrace_windbg AND NOT TARGET boost_stacktrace_basic) OR
     fetchBoost(container_hash)
 
     fetchBoost(describe)
-    if(NOT TARGET boost_describe AND NOT TARGET boost_describe)
+    if(NOT TARGET boost_describe)
         message(FATAL_ERROR "Failed FetchContent: Boost.Describe")
     endif()
 

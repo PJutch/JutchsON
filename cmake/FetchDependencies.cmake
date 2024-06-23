@@ -13,5 +13,3 @@ if(NOT TARGET GTest::gtest_main)
 endif()
 
 addDependency(JutchsON_test_dependencies GTest::gtest_main)
-
-target_link_libraries(JutchsON_test_dependencies INTERFACE JutchsON_dependencies)

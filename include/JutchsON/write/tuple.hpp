@@ -1,8 +1,8 @@
 #ifndef JUTCHSON_WRITE_TUPLE_HPP_
 #define JUTCHSON_WRITE_TUPLE_HPP_
 
-#include "tuple.hpp"
-#include "write/list.hpp"
+#include "../tuple.hpp"
+#include "list.hpp"
 
 #include "write.hpp"
 

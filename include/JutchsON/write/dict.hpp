@@ -1,7 +1,7 @@
 #ifndef JUTCHSON_WRITE_DICT_HPP_
 #define JUTCHSON_WRITE_DICT_HPP_
 
-#include "object.hpp"
+#include "../object.hpp"
 
 #include <vector>
 #include <utility>

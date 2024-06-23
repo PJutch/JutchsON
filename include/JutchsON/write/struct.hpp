@@ -1,8 +1,8 @@
 #ifndef JUTCHSON_WRITE_STRUCT_HPP_
 #define JUTCHSON_WRITE_STRUCT_HPP_
 
-#include "struct.hpp"
-#include "write/dict.hpp"
+#include "../struct.hpp"
+#include "dict.hpp"
 
 #include "write.hpp"
 

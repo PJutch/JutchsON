@@ -3,11 +3,11 @@
 
 #include "parse.hpp"
 
-#include "ParseResult.hpp"
-#include "StringView.hpp"
-#include "object.hpp"
-#include "strip.hpp"
-#include "filesystem.hpp"
+#include "../ParseResult.hpp"
+#include "../StringView.hpp"
+#include "../object.hpp"
+#include "../strip.hpp"
+#include "../filesystem.hpp"
 
 #include <unordered_map>
 #include <vector>

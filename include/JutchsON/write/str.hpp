@@ -1,7 +1,7 @@
 #ifndef JUTCHSON_WRITE_STR_HPP_
 #define JUTCHSON_WRITE_STR_HPP_
 
-#include "escape.hpp"
+#include "../escape.hpp"
 
 #include <string_view>
 #include <string>
