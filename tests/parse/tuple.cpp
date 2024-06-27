@@ -22,3 +22,21 @@ TEST(Tuple, parseTupleSingleton) {
 TEST(Tuple, parseTupleEmpty) {
     EXPECT_TRUE(JutchsON::parse<std::tuple<>>(""));
 }
+
+namespace {
+    struct TestType {};
+    struct TestEnv {};
+}
+
+namespace JutchsON {
+    template <>
+    struct Parser<TestType> {
+        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+            return {{}};
+        }
+    };
+}
+
+TEST(Tuple, parseTupleEnv) {
+    EXPECT_TRUE((JutchsON::parse<std::tuple<TestType, TestType>>("a b", TestEnv{})));
+}

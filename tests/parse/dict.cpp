@@ -92,6 +92,29 @@ TEST(Dict, parseUnorderedMultiMapDirectoryIntKey) {
         (std::unordered_multimap<int, int>{{1, 2}, {2, 5}}));
 }
 
+namespace {
+    struct TestType {};
+    struct TestEnv {};
+}
+
+namespace JutchsON {
+    template <>
+    struct Parser<TestType> {
+        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+            return {{}};
+        }
+    };
+}
+
+TEST(Dict, parseUnorderedMultimapEnv) {
+    EXPECT_TRUE((JutchsON::parse<std::unordered_multimap<int, TestType>>("1 2\n3 4\n5 6 7", TestEnv{})));
+}
+
+TEST(Dict, parseUnorderedMultimapEnvDirectory) {
+    using T = std::unordered_multimap<std::string, TestType>;
+    EXPECT_TRUE(JutchsON::parseFile<T>("../../../../tests/parse/files/dir", TestEnv{}));
+}
+
 TEST(Dict, parseUnorderedMapInt) {
 	EXPECT_EQ((JutchsON::parse<std::unordered_map<int, int>>("1 2\n3 4")), (std::unordered_map<int, int>{{1, 2}, {3, 4}}));
 }
@@ -99,4 +122,18 @@ TEST(Dict, parseUnorderedMapInt) {
 TEST(Dict, parseUnorderedMapIntDuplicated) {
 	EXPECT_EQ((JutchsON::parse<std::unordered_map<int, int>>("1 2\n1 4")),
 		(JutchsON::ParseResult<std::unordered_map<int, int>>::makeError({0, 0}, "Duplicated key detected")));
+}
+
+TEST(Dict, parseUnorderedMapDirectory) {
+    EXPECT_EQ((JutchsON::parseFile<std::unordered_map<std::string, int>>("../../../../tests/parse/files/dir")),
+        (std::unordered_map<std::string, int>{{"ab", 123}, {"c", 456}, {"de", 789}}));
+}
+
+TEST(Dict, parseUnorderedMapEnv) {
+    EXPECT_TRUE((JutchsON::parse<std::unordered_map<int, TestType>>("1 2\n3 4\n5 6 7", TestEnv{})));
+}
+
+TEST(Dict, parseUnorderedMapEnvDirectory) {
+    using T = std::unordered_map<std::string, TestType>;
+    EXPECT_TRUE(JutchsON::parseFile<T>("../../../../tests/parse/files/dir", TestEnv{}));
 }

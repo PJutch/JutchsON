@@ -61,3 +61,21 @@ TEST(Optional, parseStdOpitonalNestedNull) {
 TEST(Optional, parseStdOpitonalNestedChevronsNull) {
     EXPECT_FALSE(**JutchsON::parse<std::optional<std::optional<int>>>("<null>"));
 }
+
+namespace {
+    struct TestType {};
+    struct TestEnv {};
+}
+
+namespace JutchsON {
+    template <>
+    struct Parser<TestType> {
+        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+            return {{}};
+        }
+    };
+}
+
+TEST(Optional, parseStdOpitonalEnv) {
+    EXPECT_TRUE(JutchsON::parse<std::optional<TestType>>("", TestEnv{}));
+}

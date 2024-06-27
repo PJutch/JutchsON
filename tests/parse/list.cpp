@@ -129,7 +129,26 @@ TEST(List, parseVectorVectorErrorCollection) {
 
 TEST(List, parseVectorVectorNotAList) {
     using ParsedT = std::vector<std::vector<int>>;
-    EXPECT_EQ(JutchsON::parse<ParsedT>("garbage [3 4]", JutchsON::Context::OBJECT),
+    EXPECT_EQ(JutchsON::parse<ParsedT>("garbage [3 4]", {}, JutchsON::Context::OBJECT),
         JutchsON::ParseResult<ParsedT>::makeError({0, 0}, "Expected a nested list")
     );
 }
+
+namespace {
+    struct TestType {};
+    struct TestEnv {};
+}
+
+namespace JutchsON {
+    template <>
+    struct Parser<TestType> {
+        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+            return {{}};
+        }
+    };
+}
+
+TEST(List, parseVectorEnv) {
+    EXPECT_TRUE(JutchsON::parse<std::vector<TestType>>("1 2 3", TestEnv{}));
+}
+ 

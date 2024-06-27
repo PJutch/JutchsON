@@ -58,3 +58,21 @@ TEST(Variant, parseStdVariantValueContext) {
 TEST(Variant, parseStdVariantChevronsValueContext) {
     EXPECT_EQ((JutchsON::parse<std::variant<int, bool>>("<1>")), (std::variant<int, bool>{true}));
 }
+
+namespace {
+    struct TestType {};
+    struct TestEnv {};
+}
+
+namespace JutchsON {
+    template <>
+    struct Parser<TestType> {
+        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+            return {{}};
+        }
+    };
+}
+
+TEST(Variant, parseVariantEnv) {
+    EXPECT_EQ((JutchsON::parse<std::variant<TestType, int>>("0", TestEnv{}))->index(), 0);
+}

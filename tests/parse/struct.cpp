@@ -53,3 +53,29 @@ TEST(Struct, parseStructEmpty) {
 TEST(Struct, parseStructEmptyDirectory) {
 	EXPECT_TRUE(JutchsON::parseFile<EmptyTestStruct>("../../../../tests/parse/files/emptyDir"));
 }
+
+namespace {
+	struct TestType {};
+	struct TestEnv {};
+
+	struct TestTypeStruct {
+		TestType a;
+		TestType b;
+		TestType c;
+	};
+
+	BOOST_DESCRIBE_STRUCT(TestTypeStruct, (), (a, b, c))
+}
+
+namespace JutchsON {
+	template <>
+	struct Parser<TestType> {
+		ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+			return {{}};
+		}
+	};
+}
+
+TEST(Struct, parseStructEnv) {
+	EXPECT_TRUE(JutchsON::parse<TestTypeStruct>("a 1\nb 2\nc 3", TestEnv{}));
+}
