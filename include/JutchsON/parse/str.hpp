@@ -97,7 +97,7 @@ namespace JutchsON {
 
     template <>
     struct Parser<std::string> {
-        ParseResult<std::string> operator() (StringView s, Context) {
+        ParseResult<std::string> operator() (StringView s, auto&&, Context) {
             return parseStr(s);
         }
     };

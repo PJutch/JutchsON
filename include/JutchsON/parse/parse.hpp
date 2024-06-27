@@ -9,32 +9,35 @@
 
 #include <format>
 #include <filesystem>
+#include <utility>
 
 namespace JutchsON {
+    struct EmptyEnv {};
+
     template <typename T>
     struct Parser;
 
-    template <typename T>
-    ParseResult<T> parse(StringView s, Context context = Context::LINE) {
-        return Parser<T>{}(s, context);
+    template <typename T, typename Env = EmptyEnv>
+    ParseResult<T> parse(StringView s, Env&& enviroment = {}, Context context = Context::LINE) {
+        return Parser<T>{}(s, std::forward<Env>(enviroment), context);
     }
 
-    template <typename T>
-    ParseResult<T> parseFile(const std::filesystem::path& path) {
+    template <typename T, typename Env = EmptyEnv>
+    ParseResult<T> parseFile(const std::filesystem::path& path, Env&& env = {}) {
         if (!std::filesystem::exists(path)) {
             return ParseResult<T>::makeError({}, std::format("{} doesn't exists", path.generic_string()));
         }
 
         if constexpr (requires {
-            Parser<T>{}(&path);
+            Parser<T>{}(&path, std::forward<Env>(env));
         }) {
-            return Parser<T>{}(&path);
+            return Parser<T>{}(&path, std::forward<Env>(env));
         }
 
         if (std::filesystem::is_directory(path)) {
             return ParseResult<T>::makeError({}, std::format("Expected a file, got directory {}", path.generic_string()));
         } else {
-            return parse<T>(readWholeFile(path));
+            return parse<T>(readWholeFile(path), std::forward<Env>(env));
         }
     }
 }

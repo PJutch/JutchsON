@@ -196,7 +196,7 @@ namespace JutchsON {
 
     template <UnsignedInteger T>
     struct Parser<T> {
-        ParseResult<T> operator() (StringView s, Context) {
+        ParseResult<T> operator() (StringView s, auto&&, Context) {
             return parseUint<T>(s);
         }
 
@@ -211,7 +211,7 @@ namespace JutchsON {
 
     template <SignedInteger T>
     struct Parser<T> {
-        ParseResult<T> operator() (StringView s, Context) {
+        ParseResult<T> operator() (StringView s, auto&&, Context) {
             return parseInt<T>(s);
         }
 
@@ -226,7 +226,7 @@ namespace JutchsON {
 
     template <UnsignedFloat T>
     struct Parser<T> {
-        ParseResult<T> operator() (StringView s, Context) {
+        ParseResult<T> operator() (StringView s, auto&&, Context) {
             return parseNonnegativeFloat<T>(s);
         }
 
@@ -241,7 +241,7 @@ namespace JutchsON {
 
     template <SignedFloat T>
     struct Parser<T> {
-        ParseResult<T> operator() (StringView s, Context) {
+        ParseResult<T> operator() (StringView s, auto&&, Context) {
             return parseFloat<T>(s);
         }
 

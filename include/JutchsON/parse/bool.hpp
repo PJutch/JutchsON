@@ -26,7 +26,7 @@ namespace JutchsON {
 
     template <>
     struct Parser<bool> {
-        ParseResult<bool> operator() (StringView s, Context context) {
+        ParseResult<bool> operator() (StringView s, auto&&, Context context) {
             return parseBool(s, context == Context::LINE_REST);
         }
     };

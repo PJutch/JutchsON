@@ -25,14 +25,14 @@ namespace JutchsON {
     };
 
     template <Described T, PairRange<StringView, StringView> Pairs>
-    ParseResult<T> makeStruct(Pairs&& pairs, Context valueContext) {
+    ParseResult<T> makeStruct(Pairs&& pairs, auto&& env, Context valueContext) {
         std::vector<ParseError> errors;
         std::unordered_map<std::string, StringView> values;
         for (const auto& [keyStr, valueStr] : pairs) {
             StringView keyView{keyStr};
             StringView valueView{valueStr};
 
-            auto key = parse<std::string>(keyView, Context::OBJECT);
+            auto key = parse<std::string>(keyView, env, Context::OBJECT);
             if (!key) {
                 errors.reserve(std::ssize(errors) + std::ssize(key.errors()));
                 for (const ParseError& error : key.errors()) {
@@ -67,7 +67,7 @@ namespace JutchsON {
             }
 
             using Value = std::remove_cvref_t<decltype(std::declval<T>().*d.pointer)>;
-            res = res.combine(parse<Value>(values[d.name], valueContext), [&](const T& t, const Value& value) {
+            res = res.combine(parse<Value>(values[d.name], env, valueContext), [&](const T& t, const Value& value) {
                 T newT = t;
                 newT.*d.pointer = value;
                 return newT;
@@ -79,7 +79,8 @@ namespace JutchsON {
 
     template <Described T>
     struct Parser<T> {
-        ParseResult<T> operator() (StringView s, Context context) {
+        template <typename Env>
+        ParseResult<T> operator() (StringView s, Env&& env, Context context) {
             if (context == Context::OBJECT) {
                 if (auto stripped = strip(s); stripped.empty() || stripped.front() != '{') {
                     return ParseResult<T>::makeError(stripped.location(), "Expected a nested struct");
@@ -88,21 +89,22 @@ namespace JutchsON {
 
             return parseDict(s).then([&](const auto& pairs) {
                 return isMultilineDict(s).then([&](bool multiline) {
-                    return makeStruct<T>(pairs, multiline ? Context::LINE_REST : Context::OBJECT);
+                    return makeStruct<T>(pairs, std::forward<Env>(env), multiline ? Context::LINE_REST : Context::OBJECT);
                 });
             });
         }
 
-        ParseResult<T> operator() (const std::filesystem::path* path) {
+        template <typename Env>
+        ParseResult<T> operator() (const std::filesystem::path* path, Env&& env) {
             if (!std::filesystem::is_directory(*path)) {
-                return (*this)(readWholeFile(*path), Context::LINE);
+                return (*this)(readWholeFile(*path), std::forward<Env>(env), Context::LINE);
             }
 
             std::vector<std::pair<std::string, std::string>> pairs;
             for (const auto& elementPath : directoryElements(*path)) {
                 pairs.emplace_back(elementPath.stem().generic_string(), readWholeFile(elementPath));
             }
-            return makeStruct<T>(pairs, Context::LINE);
+            return makeStruct<T>(pairs, std::forward<Env>(env), Context::LINE);
         }
     };
 }

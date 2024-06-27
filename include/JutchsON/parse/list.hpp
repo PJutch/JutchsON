@@ -72,7 +72,7 @@ namespace JutchsON {
 
     template <typename T>
     struct Parser<std::vector<T>> {
-        ParseResult<std::vector<T>> operator() (StringView s, Context context) {
+        ParseResult<std::vector<T>> operator() (StringView s, auto&& env, Context context) {
             if (context == Context::OBJECT) {
                 if (auto stripped = strip(s); stripped.empty() || stripped.front() != '[') {
                     return ParseResult<std::vector<T>>::makeError(stripped.location(), "Expected a nested list");
@@ -91,7 +91,7 @@ namespace JutchsON {
 
             ParseResult<std::vector<T>> res{{}};
             for (StringView element : *elements) {
-                res = res.combine(parse<T>(element, *multiline ? Context::LINE : Context::OBJECT), 
+                res = res.combine(parse<T>(element, env, *multiline ? Context::LINE : Context::OBJECT),
                         [](const std::vector<T>& list, const T& element) {
                     std::vector<T> newList = list;
                     newList.push_back(element);

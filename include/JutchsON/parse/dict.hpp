@@ -86,7 +86,7 @@ namespace JutchsON {
 
     template <typename Key, typename Value>
     struct Parser<std::unordered_multimap<Key, Value>> {
-        ParseResult<std::unordered_multimap<Key, Value>> operator() (StringView s, Context context) {
+        ParseResult<std::unordered_multimap<Key, Value>> operator() (StringView s, auto&& env, Context context) {
             if (context == Context::OBJECT) {
                 if (auto stripped = strip(s); stripped.empty() || stripped.front() != '{') {
                     return ParseResult<std::unordered_multimap<Key, Value>>::makeError(stripped.location(), "Expected a nested dict");
@@ -105,8 +105,8 @@ namespace JutchsON {
 
             ParseResult<std::unordered_multimap<Key, Value>> res{{}};
             for (auto [key, value] : *pairs) {
-                auto pair = parse<Key>(key, Context::OBJECT)
-                        .combine(parse<Value>(value, *multiline ? Context::LINE_REST : Context::OBJECT), 
+                auto pair = parse<Key>(key, env, Context::OBJECT)
+                        .combine(parse<Value>(value, env, *multiline ? Context::LINE_REST : Context::OBJECT),
                             [](const Key& key, const Value& value) {
                     return std::pair{key, value};
                 });
@@ -120,15 +120,16 @@ namespace JutchsON {
             return res;
         }
 
-        ParseResult<std::unordered_multimap<Key, Value>> operator() (const std::filesystem::path* path) {
+        template <typename Env>
+        ParseResult<std::unordered_multimap<Key, Value>> operator() (const std::filesystem::path* path, Env&& env) {
             if (!std::filesystem::is_directory(*path)) {
-                return (*this)(readWholeFile(*path), Context::LINE);
+                return (*this)(readWholeFile(*path), std::forward<Env>(env), Context::LINE);
             }
 
             ParseResult<std::unordered_multimap<Key, Value>> res{{}};
             for (const auto& elementPath : directoryElements(*path)) {
-                auto pair = parse<Key>(elementPath.stem().generic_string(), Context::OBJECT)
-                        .combine(parseFile<Value>(elementPath), [](const Key& key, const Value& value) {
+                auto pair = parse<Key>(elementPath.stem().generic_string(), env, Context::OBJECT)
+                        .combine(parseFile<Value>(elementPath, env), [](const Key& key, const Value& value) {
                     return std::pair{key, value};
                 });
 
@@ -156,14 +157,16 @@ namespace JutchsON {
 
     template <typename Key, typename Value>
     struct Parser<std::unordered_map<Key, Value>> {
-        ParseResult<std::unordered_map<Key, Value>> operator() (StringView s, Context context) {
-            return parse<std::unordered_multimap<Key, Value>>(s, context).then([&](const auto& multimap) {
+        template <typename Env>
+        ParseResult<std::unordered_map<Key, Value>> operator() (StringView s, Env&& env, Context context) {
+            return parse<std::unordered_multimap<Key, Value>>(s, std::forward<Env>(env), context).then([&](const auto& multimap) {
                 return validateUniqueness(multimap);
             });
         } 
 
-        ParseResult<std::unordered_map<Key, Value>> operator() (const std::filesystem::path* path) {
-            return parseFile<std::unordered_multimap<Key, Value>>(*path).then([&](const auto& multimap) {
+        template <typename Env>
+        ParseResult<std::unordered_map<Key, Value>> operator() (const std::filesystem::path* path, Env&& env) {
+            return parseFile<std::unordered_multimap<Key, Value>>(*path, std::forward<Env>(env)).then([&](const auto& multimap) {
                 return validateUniqueness(multimap);
             });
         }

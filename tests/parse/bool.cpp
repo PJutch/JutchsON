@@ -43,10 +43,10 @@ TEST(Bool, parseGenericBool) {
 }
 
 TEST(Bool, parseGenericBoolEmpty) {
-    EXPECT_EQ(JutchsON::parse<bool>("", JutchsON::Context::LINE),
+    EXPECT_EQ(JutchsON::parse<bool>("", {}, JutchsON::Context::LINE),
         JutchsON::ParseResult<bool>::makeError({0, 0}, "Empty bool isn't allowed"));
 }
 
 TEST(Bool, parseGenericBoolEmptyAllowed) {
-    EXPECT_TRUE(*JutchsON::parse<bool>("", JutchsON::Context::LINE_REST));
+    EXPECT_TRUE(*JutchsON::parse<bool>("", {}, JutchsON::Context::LINE_REST));
 }

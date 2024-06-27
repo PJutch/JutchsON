@@ -30,29 +30,29 @@ namespace JutchsON {
         });
     }
 
-    template <size_t i, typename Variant>
-    ParseResult<Variant> parseVariant(size_t type, Location typeLocation, StringView value) {
+    template <size_t i, typename Variant, typename Env>
+    ParseResult<Variant> parseVariant(size_t type, Location typeLocation, StringView value, Env&& env) {
         if constexpr (i >= std::variant_size_v<Variant>) {
             return ParseResult<Variant>::makeError(typeLocation, 
                 std::format("Holded value type should be less then {}", std::variant_size_v<Variant>));
         } else {
             if (type == i) {
                 using ValueT = std::remove_cv_t<std::variant_alternative_t<i, Variant>>;
-                return parse<ValueT>(value, Context::LINE_REST).then([&](const ValueT& value) {
+                return parse<ValueT>(value, std::forward<Env>(env), Context::LINE_REST).then([&](const ValueT& value) {
                     return ParseResult{Variant{std::in_place_index<i>, value}};
                 });
             }
-            return parseVariant<i + 1, Variant>(type, typeLocation, value);
+            return parseVariant<i + 1, Variant>(type, typeLocation, value, std::forward<Env>(env));
         }
     }
 
     template <typename... Types>
     struct Parser<std::variant<Types...>> {
-        ParseResult<std::variant<Types...>> operator() (StringView s, Context context) {
+        ParseResult<std::variant<Types...>> operator() (StringView s, auto&& env, Context context) {
             return parseVariant(s).then([&](auto pair) {
                 auto [typeStr, valueStr] = pair;
                 return parse<size_t>(typeStr).then([&](size_t type) {
-                    return parseVariant<0, std::variant<Types...>>(type, typeStr.location(), valueStr);
+                    return parseVariant<0, std::variant<Types...>>(type, typeStr.location(), valueStr, env);
                 });
             });
         }

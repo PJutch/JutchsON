@@ -27,13 +27,14 @@ namespace JutchsON {
 
     template <typename T>
     struct Parser<std::optional<T>> {
-        ParseResult<std::optional<T>> operator() (StringView s, Context context) {
+        template <typename Env>
+        ParseResult<std::optional<T>> operator() (StringView s, Env&& env, Context context) {
             StringView stripped = strip(s);
             bool quoted = !stripped.empty() && stripped.front() == '<';
 
             return parseOptional(s).then([&](std::optional<StringView> v) {
                 if (v) {
-                    return parse<T>(*v).map([](const T& t) {
+                    return parse<T>(*v, std::forward<Env>(env), context).map([](const T& t) {
                         return std::optional<T>{t};
                     });
                 } else {

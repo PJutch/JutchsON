@@ -14,23 +14,23 @@
 
 namespace JutchsON {
     template <typename T, size_t i>
-    ParseResult<T> setTuple(ParseResult<T> tuple, std::span<StringView> values, bool multiline) {
+    ParseResult<T> setTuple(ParseResult<T> tuple, std::span<StringView> values, auto&& env, bool multiline) {
         if constexpr (i == std::tuple_size_v<T>) {
             return tuple;
         } else {
             using Value = std::tuple_element_t<i, T>;
-            return setTuple<T, i + 1>(tuple.combine(parse<Value>(values[i], multiline ? Context::LINE : Context::OBJECT),
+            return setTuple<T, i + 1>(tuple.combine(parse<Value>(values[i], env, multiline ? Context::LINE : Context::OBJECT),
                 [](const T& tuple, const Value& value) {
                 T newTuple = tuple;
                 std::get<i>(newTuple) = value;
                 return newTuple;
-            }), values, multiline);
+            }), values, env, multiline);
         }
     }
 
     template <Tuplelike T>
     struct Parser<T> {
-        ParseResult<T> operator() (StringView s, Context context) {
+        ParseResult<T> operator() (StringView s, auto&& env, Context context) {
             if (context == Context::OBJECT) {
                 if (auto stripped = strip(s); stripped.empty() || stripped.front() != '[') {
                     return ParseResult<T>::makeError(stripped.location(), "Expected a nested tuple");
@@ -52,7 +52,7 @@ namespace JutchsON {
                 return multiline.errors();
             }
 
-            return setTuple<T, 0>({{}}, *values, *multiline);
+            return setTuple<T, 0>({{}}, *values, env, *multiline);
         }
     };
 }
