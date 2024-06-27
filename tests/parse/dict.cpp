@@ -44,6 +44,11 @@ TEST(Dict, parseDictMultilineNoValueSpace) {
     EXPECT_EQ(JutchsON::parseDict("abc  \ngh ij"), result);
 }
 
+TEST(Dict, parseDictMultilineNoValueLast) {
+    std::vector<std::pair<JutchsON::StringView, JutchsON::StringView>> result{{"abc", "de"}, {"gh", ""}};
+    EXPECT_EQ(JutchsON::parseDict("abc  de\ngh"), result);
+}
+
 TEST(Dict, parseDictMultilineBraces) {
     std::vector<std::pair<JutchsON::StringView, JutchsON::StringView>> result{{"abc", "def xyz"}, {"gh", "ij"}};
     EXPECT_EQ(JutchsON::parseDict("{abc def xyz\ngh ij}"), result);

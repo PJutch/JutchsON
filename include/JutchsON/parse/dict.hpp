@@ -41,7 +41,7 @@ namespace JutchsON {
                 if (auto relKeyEnd = findOnelineObjectEnd(s.substr(keyBegin))) {
                     ptrdiff_t keyEnd = keyBegin + *relKeyEnd;
                     ptrdiff_t valueBegin = keyEnd + findOnelineObjectBegin(s.substr(keyEnd));
-                    if (valueBegin >= std::ssize(s)) {
+                    if (!multiline && valueBegin >= std::ssize(s)) {
                         return ParseResult<std::vector<std::pair<StringView, StringView>>>
                             ::makeError(s.location(std::ssize(s)), "No value given for key");
                     }
