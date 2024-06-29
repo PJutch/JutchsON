@@ -10,6 +10,7 @@
 #include "JutchsON/parse/struct.hpp"
 #include "JutchsON/parse/variant.hpp"
 #include "JutchsON/parse/optional.hpp"
+#include "JutchsON/parse/type.hpp"
 
 #include "JutchsON/write/num.hpp"
 #include "JutchsON/write/list.hpp"
