@@ -65,3 +65,7 @@ TEST(Str, parseStrSpaces) {
 TEST(Str, parseGenericString) {
     EXPECT_EQ(JutchsON::parse<std::string>("abc de"), "abc de");
 }
+
+TEST(Str, parsePath) {
+    EXPECT_EQ(JutchsON::parse<std::filesystem::path>("abc/de"), "abc/de");
+}

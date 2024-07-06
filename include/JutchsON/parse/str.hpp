@@ -5,6 +5,7 @@
 #include "../StringView.hpp"
 #include "../escape.hpp"
 
+#include <filesystem>
 #include <format>
 #include <string>
 #include <algorithm>
@@ -99,6 +100,15 @@ namespace JutchsON {
     struct Parser<std::string> {
         ParseResult<std::string> operator() (StringView s, auto&&, Context) {
             return parseStr(s);
+        }
+    };
+
+    template <>
+    struct Parser<std::filesystem::path> {
+        ParseResult<std::filesystem::path> operator() (StringView s, auto&&, Context) {
+            return parse<std::string>(s).map([](const auto& s) {
+                return static_cast<std::filesystem::path>(s);
+            });
         }
     };
 }
