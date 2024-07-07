@@ -34,7 +34,7 @@ namespace JutchsON {
 
             return parseOptional(s).then([&](std::optional<StringView> v) {
                 if (v) {
-                    return parse<T>(*v, std::forward<Env>(env), context).map([](const T& t) {
+                    return parse<T>(*v, std::forward<Env>(env), quoted ? Context::LINE : context).map([](const T& t) {
                         return std::optional<T>{t};
                     });
                 } else {

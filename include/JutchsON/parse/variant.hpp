@@ -49,6 +49,12 @@ namespace JutchsON {
     template <typename... Types>
     struct Parser<std::variant<Types...>> {
         ParseResult<std::variant<Types...>> operator() (StringView s, auto&& env, Context context) {
+            if (context == Context::OBJECT) {
+                if (auto stripped = strip(s); stripped.empty() || stripped.front() != '<') {
+                    return ParseResult<std::variant<Types...>>::makeError(stripped.location(), "Expected a nested variant");
+                }
+            }
+
             return parseVariant(s).then([&](auto pair) {
                 auto [typeStr, valueStr] = pair;
                 return parse<size_t>(typeStr).then([&](size_t type) {

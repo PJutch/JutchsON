@@ -62,6 +62,10 @@ TEST(Optional, parseStdOpitonalNestedChevronsNull) {
     EXPECT_FALSE(**JutchsON::parse<std::optional<std::optional<int>>>("<null>"));
 }
 
+TEST(Optional, parseStdOpitonalChevronsContext) {
+    EXPECT_EQ(**JutchsON::parse<std::optional<std::vector<int>>>("<1 2 3>"), (std::vector<int>{1, 2, 3}));
+}
+
 namespace {
     struct TestType {};
     struct TestEnv {};
@@ -70,7 +74,7 @@ namespace {
 namespace JutchsON {
     template <>
     struct Parser<TestType> {
-        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+        ParseResult<TestType> operator() (StringView, TestEnv, Context) {
             return {{}};
         }
     };

@@ -53,7 +53,7 @@ namespace JutchsON {
         }
 
         while (intpart > 0) {
-            res.push_back('0' + static_cast<ptrdiff_t>(fmod(intpart, 10)));
+            res.push_back(static_cast<char>('0' + static_cast<ptrdiff_t>(fmod(intpart, 10))));
 
             intpart /= 10;
             modf(intpart, &intpart);
@@ -67,7 +67,7 @@ namespace JutchsON {
 
             T digit;
             fractpart = modf(fractpart, &digit);
-            res.push_back('0' + static_cast<ptrdiff_t>(digit));
+            res.push_back(static_cast<char>('0' + static_cast<ptrdiff_t>(digit)));
         }
 
         while (res.back() == '0') {

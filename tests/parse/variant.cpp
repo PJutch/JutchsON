@@ -59,6 +59,11 @@ TEST(Variant, parseStdVariantChevronsValueContext) {
     EXPECT_EQ((JutchsON::parse<std::variant<int, bool>>("<1>")), (std::variant<int, bool>{true}));
 }
 
+TEST(Variant, parseStdVariantNestedCheck) {
+    EXPECT_EQ((JutchsON::parse<std::variant<int, int>>("0 123", {}, JutchsON::Context::OBJECT)),
+        (JutchsON::ParseResult<std::variant<int, int>>::makeError({0, 0}, "Expected a nested variant")));
+}
+
 namespace {
     struct TestType {};
     struct TestEnv {};
@@ -67,7 +72,7 @@ namespace {
 namespace JutchsON {
     template <>
     struct Parser<TestType> {
-        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+        ParseResult<TestType> operator() (StringView, TestEnv, Context) {
             return {{}};
         }
     };

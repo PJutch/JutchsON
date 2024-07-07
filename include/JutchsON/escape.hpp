@@ -22,9 +22,9 @@ namespace JutchsON {
 
     inline char digitChar(ptrdiff_t digit) {
         if (0 <= digit && digit <= 9) {
-            return '0' + digit;
+            return static_cast<char>('0' + digit);
         } else if (10 <= digit && digit <= 35) {
-            return 'A' + (digit - 10);
+            return static_cast<char>('A' + (digit - 10));
         } else {
             return '\0';
         }

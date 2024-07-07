@@ -32,12 +32,12 @@ namespace JutchsON {
             Parser<T>{}(&path, std::forward<Env>(env));
         }) {
             return Parser<T>{}(&path, std::forward<Env>(env));
-        }
-
-        if (std::filesystem::is_directory(path)) {
-            return ParseResult<T>::makeError({}, std::format("Expected a file, got directory {}", path.generic_string()));
         } else {
-            return parse<T>(readWholeFile(path), std::forward<Env>(env));
+            if (std::filesystem::is_directory(path)) {
+                return ParseResult<T>::makeError({}, std::format("Expected a file, got directory {}", path.generic_string()));
+            } else {
+                return parse<T>(readWholeFile(path), std::forward<Env>(env));
+            }
         }
     }
 }

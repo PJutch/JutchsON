@@ -12,7 +12,7 @@
 namespace JutchsON {
     template <Described T>
     struct Writer<T> {
-        std::string operator() (T t, Context context) {
+        std::string operator() (T t, Context) {
             std::vector<std::pair<std::string, std::string>> pairs;
 
             boost::mp11::mp_for_each<boost::describe::describe_members<T, boost::describe::mod_public>>([&](auto d) {

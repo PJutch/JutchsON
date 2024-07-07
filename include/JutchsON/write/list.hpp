@@ -83,7 +83,7 @@ namespace JutchsON {
     }
 
     template <Tuplelike T>
-    constexpr bool shouldBeMultiline(const T& tuple) {
+    constexpr bool shouldBeMultiline(const T&) {
         return std::tuple_size_v<T> > 40 || anyForcesMultiline<T, 0>();
     }
 

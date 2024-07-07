@@ -142,7 +142,7 @@ namespace {
 namespace JutchsON {
     template <>
     struct Parser<TestType> {
-        ParseResult<TestType> operator() (StringView s, TestEnv, Context) {
+        ParseResult<TestType> operator() (StringView, TestEnv, Context) {
             return {{}};
         }
     };

@@ -44,7 +44,7 @@ namespace JutchsON {
 
     template <typename Key, typename Value>
     struct Writer<std::unordered_map<Key, Value>> {
-        std::string operator() (const std::unordered_map<Key, Value>& map, Context context) {
+        std::string operator() (const std::unordered_map<Key, Value>& map, Context) {
             std::vector<std::pair<std::string, std::string>> pairs;
             pairs.reserve(std::ssize(map));
             for (const auto& [key, value] : map) {
