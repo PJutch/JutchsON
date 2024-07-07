@@ -23,6 +23,8 @@ namespace JutchsON {
     template <typename T>
     class ParseResult {
     public:
+        using element_type = T;
+
         ParseResult(T&& value) : data{std::move(value)} {}
         ParseResult(const T& value) : data{value} {}
 
@@ -162,6 +164,14 @@ namespace JutchsON {
             }
             return os;
         } 
+    }
+
+    template <typename T>
+    ParseResult<T> joined(ParseResult<ParseResult<T>> doubleRes) {
+        if (!doubleRes) {
+            return std::move(doubleRes.errors());
+        }
+        return std::move(*doubleRes);
     }
 }
 

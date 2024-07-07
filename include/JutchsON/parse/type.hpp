@@ -31,17 +31,12 @@ namespace JutchsON {
     template <typename Base, typename Typenames, typename Env = EmptyEnv>
     ParseResult<std::unique_ptr<Base>> parseTypeVariant(StringView s, const Typenames& typenames, Env&& env = {}) {
         return parseVariant(s).then([&](auto pair) -> ParseResult<std::unique_ptr<Base>> {
-            auto doubleRes = parseType(pair.first, typenames, [&](auto tag) {
+            return joined(parseType(pair.first, typenames, [&](auto tag) {
                 using Type = PayloadType<decltype(tag)>;
                 return parse<Type>(pair.second, std::forward<Env>(env), Context::LINE_REST).map([&](const Type& value) {
                     return static_cast<std::unique_ptr<Base>>(std::make_unique<Type>(value));
                 });
-            });
-
-            if (!doubleRes) {
-                return doubleRes.errors();
-            }
-            return std::move(*doubleRes);
+            }));
         });
     }
 }
