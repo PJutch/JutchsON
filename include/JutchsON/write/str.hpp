@@ -3,24 +3,20 @@
 
 #include "../escape.hpp"
 
+#include <algorithm>
 #include <string_view>
 #include <string>
 
 namespace JutchsON {
-    inline bool shouldBeQuouted(StringView s) {
-        for (ptrdiff_t i = 0; i < std::ssize(s); i += getCharLen(s[i])) {
-            if (s[i] == ' ' || s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}' || s[i] == '"' || s[i] == '<' || s[i] == '>') {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    inline std::string writeStr(StringView s, bool quoted = true) {
-        bool actuallyQuoted = quoted && shouldBeQuouted(s);
+    inline std::string writeStr(StringView s, bool quoteSpaces = true) {
+        bool shouldBeQuoted = std::ranges::any_of(s, [](char c) {
+            return c == '[' || c == ']' || c == '{' || c == '}' || c == '<' || c == '>' || c == '"';
+        }) || quoteSpaces && std::ranges::any_of(s, [](char c) {
+            return c == ' ';
+        });
 
         std::string res;
-        if (actuallyQuoted) {
+        if (shouldBeQuoted) {
             res.push_back('"');
         }
 
@@ -28,7 +24,7 @@ namespace JutchsON {
             res.append(escapeStrChar(s, i));
         }
 
-        if (actuallyQuoted) {
+        if (shouldBeQuoted) {
             res.push_back('"');
         }
 

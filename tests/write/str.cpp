@@ -46,6 +46,10 @@ TEST(Str, writeStrUnquoted) {
     EXPECT_EQ(JutchsON::writeStr("abc de", false), "abc de");
 }
 
+TEST(Str, writeStrUnquotedBracket) {
+    EXPECT_EQ(JutchsON::writeStr("abc[de", false), "\"abc[de\"");
+}
+
 TEST(Str, writeGenericString) {
     EXPECT_EQ(JutchsON::write(std::string{"abcde"}), "abcde");
 }
