@@ -20,6 +20,10 @@ namespace JutchsON {
         friend bool operator == (const ParseError&, const ParseError&) = default;
     };
 
+    class ParseFailed : public std::runtime_error {
+        using std::runtime_error::runtime_error;
+    };
+
     template <typename T>
     class ParseResult {
     public:
@@ -55,7 +59,7 @@ namespace JutchsON {
             if (T* value = std::get_if<T>(&data)) {
                 return *value;
             } else {
-                throw std::logic_error{"Expected parsing to be successful when it isn't"};
+                throw ParseFailed{errorString()};
             }
         }
 
@@ -63,7 +67,7 @@ namespace JutchsON {
             if (const T* value = std::get_if<T>(&data)) {
                 return *value;
             } else {
-                throw std::logic_error{"Expected parsing to be successful when it isn't"};
+                throw ParseFailed{errorString()};
             }
         }
 
@@ -71,7 +75,7 @@ namespace JutchsON {
             if (T* value = std::get_if<T>(&data)) {
                 return value;
             } else {
-                throw std::logic_error{"Expected parsing to be successful when it isn't"};
+                throw ParseFailed{errorString()};
             }
         }
 
@@ -79,7 +83,7 @@ namespace JutchsON {
             if (const T* value = std::get_if<T>(&data)) {
                 return value;
             } else {
-                throw std::logic_error{"Expected parsing to be successful when it isn't"};
+                throw ParseFailed{errorString()};
             }
         }
 
@@ -89,6 +93,14 @@ namespace JutchsON {
             } else {
                 throw std::logic_error{"Expected parsing to not be successful when it is"};
             }
+        }
+
+        std::string errorString() const {
+            std::string res = std::format("Parse failed with {} errors", std::ssize(errors()));
+            for (const auto& [location, what] : errors()) {
+                res.append(std::format("\n{}:{} {}", location.line, location.column, what));
+            }
+            return res;
         }
 
         ParseResult<T> rebased(Location base) const {
@@ -157,12 +169,7 @@ namespace JutchsON {
         if (const T* value = std::get_if<T>(&res.variant())) {
             return os << *value;
         } else {
-            const auto& errors = std::get<std::vector<ParseError>>(res.variant());
-            os << "Parse failed with " << std::ssize(errors) << " errors" << std::endl;
-            for (const auto& [location, what] : errors) {
-                os << location.line << ':' << location.column << ' ' << what << std::endl;
-            }
-            return os;
+            return os << res.errorString();
         } 
     }
 
