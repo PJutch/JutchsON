@@ -22,7 +22,7 @@ namespace JutchsON {
             return setTuple<T, i + 1>(tuple.combine(parse<Value>(values[i], env, multiline ? Context::LINE : Context::OBJECT),
                 [](const T& tuple, const Value& value) {
                 T newTuple = tuple;
-                std::get<i>(newTuple) = value;
+                get<i>(newTuple) = value;
                 return newTuple;
             }), values, env, multiline);
         }

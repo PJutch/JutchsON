@@ -8,8 +8,8 @@ namespace JutchsON {
     struct HasTupleInterface {
         static inline constexpr bool value = requires (T t) {
             typename std::tuple_element_t<i - 1, T>;
-            { std::get<i - 1>(t) } -> std::convertible_to<std::tuple_element_t<i - 1, T>>;
-        }&& HasTupleInterface<T, i - 1>::value;
+            { get<i - 1>(t) } -> std::convertible_to<std::tuple_element_t<i - 1, T>>;
+        } && HasTupleInterface<T, i - 1>::value;
     };
 
     template <typename T>
