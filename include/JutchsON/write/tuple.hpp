@@ -16,7 +16,7 @@ namespace JutchsON {
         if constexpr (i >= std::tuple_size_v<T>) {
             return;
         } else {
-            elements.push_back(write(std::get<i>(tuple), context));
+            elements.push_back(write(get<i>(tuple), context));
             return tupleElements<T, i + 1>(tuple, context, elements);
         }
     }
