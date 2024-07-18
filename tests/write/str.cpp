@@ -34,6 +34,14 @@ TEST(Str, writeStrQuoteClosingBrace) {
     EXPECT_EQ(JutchsON::writeStr("abc}de"), "\"abc}de\"");
 }
 
+TEST(Str, writeStrQuoteOpeningChevron) {
+    EXPECT_EQ(JutchsON::writeStr("abc<de"), "\"abc<de\"");
+}
+
+TEST(Str, writeStrQuoteClosingChevron) {
+    EXPECT_EQ(JutchsON::writeStr("abc>de"), "\"abc>de\"");
+}
+
 TEST(Str, writeStrUnquoted) {
     EXPECT_EQ(JutchsON::writeStr("abc de", false), "abc de");
 }

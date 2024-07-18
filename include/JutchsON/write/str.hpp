@@ -9,7 +9,7 @@
 namespace JutchsON {
     inline bool shouldBeQuouted(StringView s) {
         for (ptrdiff_t i = 0; i < std::ssize(s); i += getCharLen(s[i])) {
-            if (s[i] == ' ' || s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}' || s[i] == '"') {
+            if (s[i] == ' ' || s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}' || s[i] == '"' || s[i] == '<' || s[i] == '>') {
                 return true;
             }
         }
