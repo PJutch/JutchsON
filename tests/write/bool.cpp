@@ -27,5 +27,5 @@ TEST(Bool, writeGenericFalse) {
 }
 
 TEST(Bool, writeGenericTrueEmpty) {
-    EXPECT_EQ(JutchsON::write(true, JutchsON::Context::LINE_REST), "");
+    EXPECT_EQ(JutchsON::write(true, {}, JutchsON::Context::LINE_REST), "");
 }

@@ -91,28 +91,28 @@ namespace JutchsON {
 
     template <UnsignedInteger T>
     struct Writer<T> {
-        std::string operator() (T n, Context) {
+        std::string operator() (T n, const auto&, Context) {
             return writeUint<T>(n);
         }
     };
 
     template <SignedInteger T>
     struct Writer<T> {
-        std::string operator() (T n, Context) {
+        std::string operator() (T n, const auto&, Context) {
             return writeInt<T>(n);
         }
     };
 
     template <UnsignedFloat T>
     struct Writer<T> {
-        std::string operator() (T x, Context) {
+        std::string operator() (T x, const auto&, Context) {
             return writeNonnegativeFloat<T>(x);
         }
     };
 
     template <SignedFloat T>
     struct Writer<T> {
-        std::string operator() (T x, Context) {
+        std::string operator() (T x, const auto&, Context) {
             return writeFloat<T>(x);
         }
     };

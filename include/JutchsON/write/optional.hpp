@@ -26,9 +26,10 @@ namespace JutchsON {
 
     template <typename T>
     struct Writer<std::optional<T>> {
-        std::string operator() (std::optional<T> v, Context context) {
+        template <typename Env>
+        std::string operator() (std::optional<T> v, Env&& env, Context context) {
             if (v) {
-                return writeOptional(write(*v, context));
+                return writeOptional(write(*v, std::forward<Env>(env), context));
             } else {
                 return "null";
             }

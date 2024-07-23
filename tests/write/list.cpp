@@ -68,7 +68,7 @@ TEST(List, writeVectorString) {
 }
 
 TEST(List, writeVectorQuoted) {
-    EXPECT_EQ(JutchsON::write(std::vector{1, 2, 3}, JutchsON::Context::OBJECT), "[1 2 3]");
+    EXPECT_EQ(JutchsON::write(std::vector{1, 2, 3}, {}, JutchsON::Context::OBJECT), "[1 2 3]");
 }
 
 TEST(List, writeVectorVector) {

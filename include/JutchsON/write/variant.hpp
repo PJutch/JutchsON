@@ -30,9 +30,10 @@ namespace JutchsON {
 
     template <typename... Types>
     struct Writer<std::variant<Types...>> {
-        std::string operator() (std::variant<Types...> v, Context context) {
-            return writeVariant(write(v.index(), Context::OBJECT), std::visit([&](const auto& val) {
-                return write(val, Context::LINE_REST);
+        template <typename Env>
+        std::string operator() (std::variant<Types...> v, Env&& env, Context context) {
+            return writeVariant(write(v.index(), env, Context::OBJECT), std::visit([&](const auto& val) {
+                return write(val, std::forward<Env>(env), Context::LINE_REST);
             }, v), context == Context::OBJECT);
         }
     };

@@ -31,11 +31,11 @@ namespace JutchsON {
 
     template <typename Key, typename Value>
     struct Writer<std::unordered_multimap<Key, Value>> {
-        std::string operator() (const std::unordered_multimap<Key, Value>& map, Context context) {
+        std::string operator() (const std::unordered_multimap<Key, Value>& map, const auto& env, Context context) {
             std::vector<std::pair<std::string, std::string>> pairs;
             pairs.reserve(std::ssize(map));
             for (const auto& [key, value] : map) {
-                pairs.emplace_back(write(key, Context::OBJECT), write(value, Context::LINE_REST));
+                pairs.emplace_back(write(key, env, Context::OBJECT), write(value, env, Context::LINE_REST));
             }
 
             return writeDict(pairs);
@@ -44,11 +44,11 @@ namespace JutchsON {
 
     template <typename Key, typename Value>
     struct Writer<std::unordered_map<Key, Value>> {
-        std::string operator() (const std::unordered_map<Key, Value>& map, Context) {
+        std::string operator() (const std::unordered_map<Key, Value>& map, const auto& env, Context) {
             std::vector<std::pair<std::string, std::string>> pairs;
             pairs.reserve(std::ssize(map));
             for (const auto& [key, value] : map) {
-                pairs.emplace_back(write(key, Context::OBJECT), write(value, Context::LINE_REST));
+                pairs.emplace_back(write(key, env, Context::OBJECT), write(value, env, Context::LINE_REST));
             }
 
             return writeDict(pairs);

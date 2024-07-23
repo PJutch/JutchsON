@@ -14,7 +14,7 @@ namespace JutchsON {
 
     template <>
     struct Writer<bool> {
-        std::string operator() (bool b, Context context) {
+        std::string operator() (bool b, const auto&, Context context) {
             return writeBool(b, context == Context::LINE_REST);
         }
     };

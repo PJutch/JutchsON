@@ -89,13 +89,13 @@ namespace JutchsON {
 
     template <typename T>
     struct Writer<std::vector<T>> {
-        std::string operator() (const std::vector<T>& list, Context context) {
+        std::string operator() (const std::vector<T>& list, const auto& env, Context context) {
             bool multiline = shouldBeMultiline(list);
             
             std::vector<std::string> elements;
             elements.reserve(std::ssize(list));
             for (const auto& element : list) {
-                elements.push_back(write(element, multiline ? Context::LINE : Context::OBJECT));
+                elements.push_back(write(element, env, multiline ? Context::LINE : Context::OBJECT));
             }
 
             if (multiline) {
