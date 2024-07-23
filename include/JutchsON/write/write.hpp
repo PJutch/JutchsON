@@ -17,7 +17,7 @@ namespace JutchsON {
 
     template <typename T, typename Env = EmptyEnv>
     void writeFile(const std::filesystem::path& path, T t, Env&& env = {}) {
-        writeWholeFile(path, write(t), std::forward<Env>(env));
+        writeWholeFile(path, write(t, std::forward<Env>(env)));
     }
 }
 
